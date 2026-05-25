@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Product Details</title>
+
+    <style>
+        * {
+
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+
+
+        body {
+
+            background: #f1f3f6;
+
+            padding: 40px;
+        }
+
+
+
+        .product-page {
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            gap: 40px;
+
+            align-items: center;
+        }
+
+
+
+        /* IMAGE */
+
+        .product-page img {
+
+            width: 400px;
+
+            height: 500px;
+
+            object-fit: cover;
+
+            border-radius: 20px;
+        }
+
+
+
+        /* DETAILS */
+
+        .details {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 20px;
+        }
+
+
+
+        .details h1 {
+
+            font-size: 40px;
+
+            color: #111827;
+        }
+
+
+
+        .price {
+
+            font-size: 35px;
+
+            color: #8b5cf6;
+
+            font-weight: bold;
+        }
+
+
+
+        .desc {
+
+            color: #374151;
+
+            line-height: 1.8;
+        }
+
+
+
+        /* BUTTONS */
+
+        .buttons {
+
+            display: flex;
+
+            gap: 20px;
+        }
+
+
+
+        .buttons button {
+
+            padding: 16px 30px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+
+
+        .cart-btn {
+
+            background: #8b5cf6;
+        }
+
+
+
+        .buy-btn {
+
+            background: #22c55e;
+        }
+
+
+        /* RELATED PRODUCTS */
+
+.related-products{
+
+    margin-top:40px;
+}
+
+
+
+.related-products h2{
+
+    margin-bottom:20px;
+
+    color:#111827;
+}
+
+
+
+.related-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+
+    gap:20px;
+}
+
+
+
+.related-card{
+
+    background:#f3f4f6;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    text-decoration:none;
+
+    color:black;
+
+    transition:0.3s;
+}
+
+
+
+.related-card img{
+
+    width:100%;
+
+    height:180px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+}
+
+
+
+.related-card h3{
+
+    margin-top:10px;
+
+    font-size:18px;
+}
+
+
+
+.related-card p{
+
+    margin-top:8px;
+
+    font-weight:bold;
+}
+
+
+
+.related-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 10px 20px rgba(0,0,0,0.2);
+}
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <div class="product-page" id="productPage">
+
+    </div>
+
+
+
+    <script>
+
+        const params =
+            new URLSearchParams(
+
+                window.location.search
+
+            );
+
+
+
+        const productId =
+            params.get("id");
+
+
+
+        const productPage =
+            document.getElementById(
+
+                "productPage"
+
+            );
+
+
+
+        // GET PRODUCT
+        async function getProduct() {
+
+            const response =
+                await fetch(
+
+                    "http://localhost:5000/products"
+
+                );
+
+
+
+            const products =
+                await response.json();
+
+
+
+            const product =
+                products.find(
+
+                    (item) => item._id === productId
+
+                );
+
+
+
+            productPage.innerHTML = `
+
+    <img src="${product.image}">
+
+    <div class="details">
+
+        <h1>
+
+        ${product.name}
+
+        </h1>
+
+        <p class="price">
+
+        ₹${product.price}
+
+        </p>
+
+        <p class="desc">
+
+        ${product.description}
+
+        </p>
+
+        <div class="buttons">
+
+            <button class="cart-btn">
+
+            Add To Cart
+
+            </button>
+
+            <button
+class="buy-btn"
+
+id="buyNowBtn">
+
+Buy Now
+
+</button>
+
+        </div>
+
+
+     <div class="related-products">
+
+<h2>Related Products 😍</h2>
+
+<div class="related-grid">
+
+${products
+
+.filter((item) => {
+
+return item.category ===
+product.category &&
+
+item._id !== product._id;
+
+})
+
+.slice(0,4)
+
+.map((item) => {
+
+return `
+
+<a href="product-details.html?id=${item._id}"
+
+class="related-card">
+
+<img src="${item.image}">
+
+<h3>
+
+${item.name}
+
+</h3>
+
+<p>
+
+₹${item.price}
+
+</p>
+
+</a>
+
+`;
+
+})
+
+.join("")}
+
+</div>
+
+</div>   
+
+    </div>
+    `;
+
+        }
+
+
+
+        getProduct();
+
+
+        // BUY NOW
+
+        document.addEventListener(
+
+            "click",
+
+            (event) => {
+
+                if (
+
+                    event.target.id ===
+                    "buyNowBtn"
+
+                ) {
+
+                    // LOGIN CHECK
+                    const user = JSON.parse(
+
+                        localStorage.getItem(
+                            "user"
+                        )
+
+                    );
+
+
+
+                    if (!user) {
+
+                        alert(
+                            "Please login first"
+                        );
+
+                        window.location.href =
+                            "login.html";
+
+                        return;
+
+                    }
+
+
+
+                    // SAVE PRODUCT
+                    localStorage.setItem(
+
+                        "buyProduct",
+
+                        JSON.stringify(productId)
+
+                    );
+
+
+
+                    // GO TO HOME PAGE
+                    window.location.href =
+
+                    `index.html?buy=${productId}`;
+
+                }
+
+            });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Edit Product</title>
+
+<style>
+
+body{
+
+    font-family:Arial;
+
+    background:#f1f3f6;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    height:100vh;
+}
+
+.form-box{
+
+    width:400px;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+}
+
+input{
+
+    padding:14px;
+
+    border:1px solid #ccc;
+
+    border-radius:10px;
+}
+
+button{
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#8b5cf6;
+
+    color:white;
+
+    cursor:pointer;
+}
+
+img{
+
+    width:120px;
+
+    height:120px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    margin:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+
+<div class="form-box">
+
+    <h1>Edit Product</h1>
+
+
+
+    <img id="previewImage">
+
+
+
+    <input
+    type="text"
+    id="name"
+    placeholder="Product Name">
+
+
+
+    <input
+    type="number"
+    id="price"
+    placeholder="Product Price">
+
+
+
+    <input
+    type="text"
+    id="category"
+    placeholder="Category">
+
+
+
+    <input
+    type="file"
+    id="image">
+
+
+
+    <button id="updateBtn">
+
+        Update Product
+
+    </button>
+
+</div>
+
+
+
+<script>
+
+const params =
+new URLSearchParams(
+
+    window.location.search
+
+);
+
+const productId =
+params.get("id");
+
+
+
+const nameInput =
+document.getElementById("name");
+
+const priceInput =
+document.getElementById("price");
+
+const categoryInput =
+document.getElementById("category");
+
+const imageInput =
+document.getElementById("image");
+
+const previewImage =
+document.getElementById("previewImage");
+
+const updateBtn =
+document.getElementById("updateBtn");
+
+
+
+// GET PRODUCT
+async function getProduct(){
+
+    const response =
+    await fetch(
+
+        "http://localhost:5000/products"
+
+    );
+
+
+
+    const products =
+    await response.json();
+
+
+
+    const product =
+    products.find(
+
+        (item) => item._id === productId
+
+    );
+
+
+
+    nameInput.value =
+    product.name;
+
+    priceInput.value =
+    product.price;
+
+    categoryInput.value =
+    product.category;
+
+    previewImage.src =
+    product.image;
+
+}
+
+getProduct();
+
+
+
+// UPDATE PRODUCT
+updateBtn.addEventListener("click",
+async () => {
+
+    // VALIDATION
+    if(
+
+        nameInput.value === "" ||
+
+        priceInput.value === "" ||
+
+        categoryInput.value === ""
+
+    ){
+
+        alert("Please fill all fields");
+
+        return;
+    }
+
+
+
+    const formData =
+    new FormData();
+
+
+
+    formData.append(
+
+        "name",
+
+        nameInput.value
+
+    );
+
+
+
+    formData.append(
+
+        "price",
+
+        priceInput.value
+
+    );
+
+
+
+    formData.append(
+
+        "category",
+
+        categoryInput.value
+
+    );
+
+
+
+    // IMAGE
+    if(imageInput.files[0]){
+
+        formData.append(
+
+            "image",
+
+            imageInput.files[0]
+
+        );
+
+    }
+
+
+
+    await fetch(
+
+        `http://localhost:5000/products/${productId}`,
+
+        {
+
+            method:"PUT",
+
+            body:formData
+
+        }
+
+    );
+
+
+
+    alert("Product Updated");
+
+localStorage.setItem(
+
+    "refreshProducts",
+
+    "true"
+
+);
+
+    window.location.href =
+    "admin-products.html";
+
+});
+
+</script>
+
+</body>
+
+</html>

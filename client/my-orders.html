@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders</title>
+
+    <style>
+        * {
+
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+
+
+        body {
+
+            background: #f1f3f6;
+
+            padding: 30px;
+        }
+
+
+
+        h1 {
+
+            margin-bottom: 30px;
+        }
+
+
+
+        .orders {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 20px;
+        }
+
+
+
+        /* CARD */
+
+        .order-card {
+
+            background: white;
+
+            border-radius: 15px;
+
+            padding: 20px;
+
+            display: flex;
+
+            gap: 20px;
+
+            align-items: center;
+
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+        /* IMAGE */
+
+        .order-card img {
+
+            width: 160px;
+
+            height: 160px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+        }
+
+
+
+        /* DETAILS */
+
+        .order-details {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+
+        .order-details h2 {
+
+            font-size: 24px;
+
+            color: #111827;
+        }
+
+
+
+        .price {
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            color: #8b5cf6;
+        }
+
+
+
+        /* STATUS */
+
+        .status {
+
+            width: max-content;
+
+            padding: 8px 15px;
+
+            border-radius: 20px;
+
+            color: white;
+
+            font-size: 14px;
+        }
+
+
+
+        .pending {
+
+            background: orange;
+        }
+
+
+
+        .delivered {
+
+            background: green;
+        }
+
+
+
+        /* BUTTON */
+
+        .track-btn {
+
+            width: 180px;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #8b5cf6;
+
+            color: white;
+
+            cursor: pointer;
+
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <h1>My Orders</h1>
+
+
+
+    <div class="orders" id="orders">
+
+    </div>
+
+
+
+    <script>
+
+        const ordersDiv =
+            document.getElementById("orders");
+
+
+
+        // USER
+        const user =
+            JSON.parse(
+
+                localStorage.getItem("user")
+
+            );
+
+
+
+        // LOGIN CHECK
+        if (!user) {
+
+            window.location.href =
+                "login.html";
+        }
+
+
+
+        // GET ORDERS
+        async function getOrders() {
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        "http://localhost:5000/orders"
+
+                    );
+
+
+
+                const orders =
+                    await response.json();
+
+
+
+                // FILTER USER ORDERS
+                const myOrders =
+                    orders.filter((order) => {
+
+                        return (
+
+                            order.userEmail ===
+                            user.email
+
+                        );
+
+                    });
+
+
+
+                ordersDiv.innerHTML = "";
+
+
+
+                if (myOrders.length === 0) {
+
+                    ordersDiv.innerHTML =
+
+                        "<h2>No Orders Found</h2>";
+
+                    return;
+                }
+
+
+
+                myOrders.forEach((order) => {
+
+                    ordersDiv.innerHTML += `
+
+            <div class="order-card">
+
+                <img src="${order.productImage}">
+
+                <div class="order-details">
+
+                    <h2>
+
+                    ${order.productName}
+
+                    </h2>
+
+                    <p class="price">
+
+                    ₹${order.productPrice}
+
+                    </p>
+
+                    <p>
+
+                    ${order.customerAddress}
+
+                    </p>
+
+                    <div class="status
+                    ${order.status ===
+                            "Delivered"
+
+                            ? "delivered"
+
+                            : "pending"}">
+
+                    ${order.status}
+
+                    </div>
+
+                    <button
+class="track-btn"
+
+onclick="trackOrder(
+'${order.status}'
+)">
+
+Track Order
+
+</button>
+
+                </div>
+
+            </div>
+
+            `;
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        getOrders();
+
+        // TRACK ORDER
+
+function trackOrder(status){
+
+    if(
+
+        status ===
+        "Delivered"
+
+    ){
+
+        alert(
+
+`✅ Order Confirmed
+
+✅ Packed
+
+✅ Shipped
+
+✅ Out For Delivery
+
+✅ Delivered`
+
+        );
+
+    }
+
+    else{
+
+        alert(
+
+`✅ Order Confirmed
+
+✅ Packed
+
+🚚 Shipped
+
+⏳ Out For Delivery`
+
+        );
+
+    }
+
+}
+
+
+    </script>
+
+</body>
+
+</html>

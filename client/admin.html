@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Orders</title>
+
+
+
+    <style>
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+            font-family: Arial;
+
+        }
+
+
+
+        body {
+
+            background: #f1f3f6;
+
+            padding: 30px;
+
+        }
+
+
+
+        h1 {
+
+            margin-bottom: 30px;
+        }
+
+
+
+        .orders-container {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 20px;
+        }
+
+
+
+        .order-card {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+
+        .delete-btn {
+
+            width: 150px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: red;
+
+            color: white;
+
+            cursor: pointer;
+
+            margin-top: 10px;
+        }
+
+        .deliver-btn {
+
+            width: 170px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: green;
+
+            color: white;
+
+            cursor: pointer;
+
+            margin-top: 10px;
+        }
+
+        #logoutBtn{
+
+    padding:12px 20px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:red;
+
+    color:white;
+
+    cursor:pointer;
+
+    margin-bottom:20px;
+}
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <h1>All Orders</h1>
+    <button id="logoutBtn">
+
+        Logout
+
+    </button>
+
+
+
+    <div class="orders-container" id="ordersContainer">
+
+    </div>
+
+
+
+    <script>
+        // CHECK USER
+
+const user =
+JSON.parse(
+
+    localStorage.getItem("user")
+
+);
+
+
+
+// IF NOT ADMIN
+if(
+
+!user ||
+
+user.role !== "admin"
+
+){
+
+    window.location.href =
+    "login.html";
+
+}
+        
+        const ordersContainer =
+            document.getElementById("ordersContainer");
+
+
+
+        // GET ORDERS
+        async function getOrders() {
+
+            try {
+
+                const response = await fetch(
+
+                    "http://localhost:5000/orders"
+
+                );
+
+
+
+                const orders =
+                    await response.json();
+
+
+
+                ordersContainer.innerHTML = "";
+
+
+
+                orders.forEach((order) => {
+
+                    const orderCard =
+                        document.createElement("div");
+
+
+
+                    orderCard.classList.add("order-card");
+
+                    orderCard.innerHTML = `
+
+    <img
+    src="${order.productImage}"
+
+    style="
+    width:150px;
+    height:150px;
+    object-fit:cover;
+    border-radius:10px;
+    display:block;
+    margin-bottom:15px;
+    ">
+
+    <h2>${order.productName}</h2>
+
+    <p>
+        <b>Price:</b>
+        ₹${order.productPrice}
+    </p>
+
+    <p>
+        <b>Size:</b>
+        ${order.productSize}
+    </p>
+
+    <p>
+
+    <b>Status:</b>
+
+    <span
+    style="
+    color:
+    ${order.status === 'Delivered'
+                            ? 'green'
+                            : 'orange'}
+    ">
+
+    ${order.status}
+
+    </span>
+
+    </p>
+
+    <p>
+        <b>Name:</b>
+        ${order.customerName}
+    </p>
+
+    <p>
+        <b>Phone:</b>
+        ${order.customerPhone}
+    </p>
+
+    <p>
+        <b>Address:</b>
+        ${order.customerAddress}
+    </p>
+
+    <button
+    class="deliver-btn"
+
+    onclick="markDelivered(
+    '${order._id}'
+    )">
+
+    Mark Delivered
+
+    </button>
+
+    <button
+    class="delete-btn"
+
+    onclick="deleteOrder(
+    '${order._id}'
+    )">
+
+    Delete Order
+
+    </button>
+
+`;
+
+
+
+
+
+                    ordersContainer.appendChild(orderCard);
+
+                });
+
+            }
+
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+        // DELETE ORDER
+        async function deleteOrder(id) {
+
+            try {
+
+                await fetch(
+
+                    `http://localhost:5000/orders/${id}`,
+
+                    {
+
+                        method: "DELETE"
+
+                    }
+
+                );
+
+
+
+                getOrders();
+
+            }
+
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+
+
+        async function markDelivered(id) {
+
+            try {
+
+                await fetch(
+
+                    `http://localhost:5000/orders/${id}`,
+
+                    {
+
+                        method: "PUT"
+
+                    }
+
+                );
+
+
+
+                getOrders();
+
+            }
+
+            catch (error) {
+
+                console.log(error);
+
+            }
+
+        }
+
+
+        const logoutBtn =
+document.getElementById("logoutBtn");
+
+
+
+logoutBtn.addEventListener("click", () => {
+
+    localStorage.removeItem(
+    "user"
+);
+
+
+
+window.location.href =
+"login.html";
+
+});
+        // LOAD ORDERS
+        getOrders();
+
+    </script>
+
+</body>
+
+</html>
