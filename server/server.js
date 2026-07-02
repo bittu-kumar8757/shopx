@@ -259,7 +259,7 @@ async (req,res) => {
     req.body.description,
 
     image:
-    `http://localhost:5000/uploads/${req.file.filename}`
+    `https://shopx-backends.onrender.com/uploads/${req.file.filename}`
 
 });
 
@@ -342,7 +342,7 @@ async (req,res) => {
 
             imagePath =
 
-            `http://localhost:5000/uploads/${req.file.filename}`;
+            `https://shopx-backends.onrender.com/uploads/${req.file.filename}`;
 
         }
 
