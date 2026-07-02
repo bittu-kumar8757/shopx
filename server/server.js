@@ -1,4 +1,6 @@
+require("dotenv").config();
 
+const PORT = process.env.PORT || 5000;
 const multer = require("multer");
 
 const path = require("path");
@@ -63,13 +65,7 @@ app.use(
 
 
 // STATIC FOLDER
-app.use(
 
-    "/uploads",
-
-    express.static("uploads")
-
-);
 
 // MIDDLEWARE
 app.use(cors());
@@ -78,13 +74,11 @@ app.use(express.json());
 
 app.use("/api/users", userRoutes);
 
-// PORT
-const PORT = 5000;
 
 
 
 // MONGODB CONNECT
-mongoose.connect("mongodb://127.0.0.1:27017/shopx")
+mongoose.connect(process.env.MONGO_URI)
 
 .then(() => {
 
@@ -111,40 +105,45 @@ app.get("/", (req,res) => {
 
 // SAVE ORDER API
 app.post("/orders", async (req,res) => {
+    const price = Number(req.body.productPrice);
+
+const discount = Math.round(price * 0.20);
+
+const deliveryCharge = 49;
+
+const totalAmount = price - discount + deliveryCharge;
 
     try{
 
         const newOrder = new Order({
 
-            customerName:
-            req.body.customerName,
+    customerName:req.body.customerName,
 
-            customerPhone:
-            req.body.customerPhone,
+    customerPhone:req.body.customerPhone,
 
-            customerAddress:
-            req.body.customerAddress,
+    customerAddress:req.body.customerAddress,
 
-            productName:
-            req.body.productName,
+    paymentMethod:req.body.paymentMethod,
 
-            productPrice:
-            req.body.productPrice,
+    productName:req.body.productName,
 
-             productImage:
-             req.body.productImage,
+    productPrice:price,
 
-            productSize:
-            req.body.productSize,
+    productImage:req.body.productImage,
 
-            userEmail:
-            req.body.userEmail,
+    productSize:req.body.productSize,
 
-            description:
-             req.body.description
-            
+    userEmail:req.body.userEmail,
 
-        });
+    description:req.body.description,
+
+    discount,
+
+    deliveryCharge,
+
+    totalAmount
+
+});
 
 
 
