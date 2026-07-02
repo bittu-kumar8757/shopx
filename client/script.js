@@ -455,7 +455,7 @@ placeFinalOrder.addEventListener("click", async () => {
 
     // SEND TO BACKEND
     const response = await fetch(
-      "http://localhost:5000/orders",
+      "https://shopx-backends.onrender.com/orders",
 
       {
         method: "POST",
@@ -488,8 +488,7 @@ placeFinalOrder.addEventListener("click", async () => {
 
 async function fetchProducts() {
   try {
-    const response = await fetch("http://localhost:5000/products");
-
+    const response = await fetch("https://shopx-backends.onrender.com/products");
     const data = await response.json();
 
     products = data;

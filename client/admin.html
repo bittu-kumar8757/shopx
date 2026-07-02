@@ -110,22 +110,22 @@
             margin-top: 10px;
         }
 
-        #logoutBtn{
+        #logoutBtn {
 
-    padding:12px 20px;
+            padding: 12px 20px;
 
-    border:none;
+            border: none;
 
-    border-radius:10px;
+            border-radius: 10px;
 
-    background:red;
+            background: red;
 
-    color:white;
+            color: white;
 
-    cursor:pointer;
+            cursor: pointer;
 
-    margin-bottom:20px;
-}
+            margin-bottom: 20px;
+        }
     </style>
 
 </head>
@@ -152,29 +152,29 @@
     <script>
         // CHECK USER
 
-const user =
-JSON.parse(
+        const user =
+            JSON.parse(
 
-    localStorage.getItem("user")
+                localStorage.getItem("user")
 
-);
+            );
 
 
 
-// IF NOT ADMIN
-if(
+        // IF NOT ADMIN
+        if (
 
-!user ||
+            !user ||
 
-user.role !== "admin"
+            user.role !== "admin"
 
-){
+        ) {
 
-    window.location.href =
-    "login.html";
+            window.location.href =
+                "login.html";
 
-}
-        
+        }
+
         const ordersContainer =
             document.getElementById("ordersContainer");
 
@@ -187,7 +187,7 @@ user.role !== "admin"
 
                 const response = await fetch(
 
-                    "http://localhost:5000/orders"
+                    "https://shopx-backends.onrender.com/orders"
 
                 );
 
@@ -321,7 +321,7 @@ user.role !== "admin"
 
                 await fetch(
 
-                    `http://localhost:5000/orders/${id}`,
+                    `https://shopx-backends.onrender.com/orders/${id}`,
 
                     {
 
@@ -354,7 +354,7 @@ user.role !== "admin"
 
                 await fetch(
 
-                    `http://localhost:5000/orders/${id}`,
+                    `https://shopx-backends.onrender.com/orders/${id}`,
 
                     {
 
@@ -380,22 +380,22 @@ user.role !== "admin"
 
 
         const logoutBtn =
-document.getElementById("logoutBtn");
+            document.getElementById("logoutBtn");
 
 
 
-logoutBtn.addEventListener("click", () => {
+        logoutBtn.addEventListener("click", () => {
 
-    localStorage.removeItem(
-    "user"
-);
+            localStorage.removeItem(
+                "user"
+            );
 
 
 
-window.location.href =
-"login.html";
+            window.location.href =
+                "login.html";
 
-});
+        });
         // LOAD ORDERS
         getOrders();
 
