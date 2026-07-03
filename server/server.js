@@ -1,9 +1,11 @@
 require("dotenv").config();
 
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const PORT = process.env.PORT || 5000;
 const multer = require("multer");
 
-const path = require("path");
+// const path = require("path");
 
 const express = require("express");
 
@@ -22,46 +24,21 @@ const app = express();
 
 // IMAGE STORAGE
 
-const storage = multer.diskStorage({
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-    destination:(req,file,cb) => {
-
-        cb(null,"uploads/");
-    },
-
-    filename:(req,file,cb) => {
-
-        cb(
-
-            null,
-
-            Date.now() +
-
-            path.extname(file.originalname)
-
-        );
-
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: "shopx-products",
+        allowed_formats: ["jpg","jpeg","png","webp"]
     }
-
 });
 
-
-
-const upload = multer({
-
-    storage
-});
-
-
-
-app.use(
-
-    "/uploads",
-
-    express.static("uploads")
-
-);
-
+const upload = multer({ storage });
 
 
 // STATIC FOLDER
@@ -258,8 +235,9 @@ async (req,res) => {
     description:
     req.body.description,
 
-    image:
-    `https://shopx-backends.onrender.com/uploads/${req.file.filename}`
+    image:req.file.path
+    
+    
 
 });
 
@@ -340,9 +318,7 @@ async (req,res) => {
         // NEW IMAGE
         if(req.file){
 
-            imagePath =
-
-            `https://shopx-backends.onrender.com/uploads/${req.file.filename}`;
+          imagePath = req.file.path;  
 
         }
 
