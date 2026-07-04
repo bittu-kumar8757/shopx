@@ -1,439 +1,755 @@
+// require("dotenv").config();
+
+// const PORT = process.env.PORT || 5000;
+// const multer = require("multer");
+// const cloudinary = require("./config/cloudinary");
+// const { CloudinaryStorage } = require("multer-storage-cloudinary");
+// // const path = require("path");
+
+// const express = require("express");
+
+// const mongoose = require("mongoose");
+
+// const cors = require("cors");
+
+// const Order = require("./models/Order");
+
+// const Product = require("./models/Product");
+
+// const userRoutes = require("./routes/userRoutes");
+
+// const app = express();
+
+
+// // IMAGE STORAGE
+
+// const storage = new CloudinaryStorage({
+//   cloudinary: cloudinary,
+//   params: {
+//     folder: "shopx-products",
+//     allowed_formats: ["jpg", "jpeg", "png", "webp"],
+//   },
+// });
+
+// const upload = multer({ storage });
+
+
+// // STATIC FOLDER
+
+
+// // MIDDLEWARE
+// app.use(cors());
+
+// app.use(express.json());
+
+// app.use("/api/users", userRoutes);
+
+
+
+
+// // MONGODB CONNECT
+// mongoose.connect(process.env.MONGO_URI)
+
+// .then(() => {
+
+//     console.log("MongoDB Connected");
+
+// })
+
+// .catch((error) => {
+
+//     console.log(error);
+
+// });
+
+// // catch (error) {
+// //     console.error("ERROR:", error);
+// //     res.status(500).json({
+// //         success: false,
+// //         message: error.message,
+// //         stack: error.stack
+// //     });
+// // }
+
+
+// // TEST ROUTE
+// app.get("/", (req,res) => {
+
+//     res.send("ShopX Backend Running");
+
+// });
+
+
+
+// // SAVE ORDER API
+// app.post("/orders", async (req,res) => {
+//     const price = Number(req.body.productPrice);
+
+// const discount = Math.round(price * 0.20);
+
+// const deliveryCharge = 49;
+
+// const totalAmount = price - discount + deliveryCharge;
+
+//     try{
+
+//         const newOrder = new Order({
+
+//     customerName:req.body.customerName,
+
+//     customerPhone:req.body.customerPhone,
+
+//     customerAddress:req.body.customerAddress,
+
+//     paymentMethod:req.body.paymentMethod,
+
+//     productName:req.body.productName,
+
+//     productPrice:price,
+
+//     productImage:req.body.productImage,
+
+//     productSize:req.body.productSize,
+
+//     userEmail:req.body.userEmail,
+
+//     description:req.body.description,
+
+//     discount,
+
+//     deliveryCharge,
+
+//     totalAmount
+
+// });
+
+
+
+//         // SAVE ORDER
+//         await newOrder.save();
+
+
+
+//         res.status(201).json({
+
+//             message:"Order Saved Successfully"
+
+//         });
+
+//     }
+
+//     // catch(error){
+
+//     //     console.log(error);
+
+//     catch (error) {
+//     console.error("ERROR:", error);
+//     res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         stack: error.stack
+//     });
+// }
+
+
+
+//         res.status(500).json({
+
+//             message:"Server Error"
+
+//         });
+
+// });
+
+
+
+// // GET ALL ORDERS
+// app.get("/orders", async (req,res) => {
+
+//     try{
+
+//         const orders =
+//         await Order.find();
+
+
+
+//         res.json(orders);
+
+//     }
+
+//     // catch(error){
+
+//     //     console.log(error);
+
+//     // }
+
+//     catch (error) {
+//     console.error("ERROR:", error);
+//     res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         stack: error.stack
+//     });
+// }
+
+// });
+
+
+
+// // DELETE ORDER
+// app.delete("/orders/:id",
+// async (req,res) => {
+
+//     try{
+
+//         await Order.findByIdAndDelete(
+//             req.params.id
+//         );
+
+
+
+//         res.json({
+
+//             message:"Order Deleted"
+
+//         });
+
+//     }
+
+//     // catch(error){
+
+//     //     console.log(error);
+
+//     // }
+
+//     catch (error) {
+//     console.error("ERROR:", error);
+//     res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         stack: error.stack
+//     });
+// }
+
+// });
+
+
+// // ADD PRODUCT
+
+// // ADD PRODUCT
+
+// app.post("/products", upload.single("image"), async (req, res) => {
+//   try {
+
+//     console.log("BODY:", req.body);
+//     console.log("FILE:", req.file);
+
+//     if (!req.file) {
+//       return res.status(400).json({
+//         message: "Image upload failed"
+//       });
+//     }
+
+//     const newProduct = new Product({
+//       name: req.body.name,
+//       price: req.body.price,
+//       category: req.body.category,
+//       description: req.body.description,
+//       image: req.file.path
+//     });
+
+//     await newProduct.save();
+
+//     res.json({
+//       message: "Product Added Successfully"
+//     });
+
+//   } catch (error) {
+
+//     console.error("PRODUCT ERROR:", error);
+
+//     res.status(500).json({
+//       message: error.message
+//     });
+//   }
+// });
+// // UPDATE PRODUCT
+
+// // UPDATE PRODUCT
+
+// app.put(
+
+// "/products/:id",
+
+// upload.single("image"),
+
+// async (req,res) => {
+
+//     try{
+
+//         const product =
+//         await Product.findById(
+
+//             req.params.id
+
+//         );
+
+
+
+//         // OLD IMAGE
+//         let imagePath =
+//         product.image;
+
+
+
+//         // NEW IMAGE
+//         if(req.file){
+
+//           imagePath = req.file.path;  
+
+//         }
+
+
+
+//         await Product.findByIdAndUpdate(
+
+//             req.params.id,
+
+//             {
+
+//                 name:req.body.name,
+
+//                 price:req.body.price,
+
+//                 category:req.body.category,
+
+//                 image:imagePath
+
+//             }
+
+//         );
+
+
+
+//         res.json({
+
+//             message:"Product Updated"
+
+//         });
+
+//     }
+
+//     //catch(error){
+
+//     //    console.log(error);
+
+//    // }
+
+//    catch (error) {
+//     console.error("ERROR:", error);
+//     res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         stack: error.stack
+//     });
+// }
+
+// });
+
+
+
+// // DELETE PRODUCT
+
+// app.delete("/products/:id",
+// async (req,res) => {
+
+//     try{
+
+//         await Product.findByIdAndDelete(
+
+//             req.params.id
+
+//         );
+
+
+
+//         res.json({
+
+//             message:"Product Deleted"
+
+//         });
+
+//     }
+
+//     // catch(error){
+
+//     //     console.log(error);
+
+//     // }
+
+//     catch (error) {
+//     console.error("ERROR:", error);
+//     res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         stack: error.stack
+//     });
+// }
+
+// });
+
+
+// // UPDATE ORDER STATUS
+
+// app.put("/orders/:id",
+// async (req,res) => {
+
+//     try{
+
+//         await Order.findByIdAndUpdate(
+
+//             req.params.id,
+
+//             {
+
+//                 status:"Delivered"
+
+//             }
+
+//         );
+
+
+
+//         res.json({
+
+//             message:"Order Delivered"
+
+//         });
+
+//     }
+
+//     // catch(error){
+
+//     //     console.log(error);
+
+//     // }
+
+//     catch (error) {
+//     console.error("ERROR:", error);
+//     res.status(500).json({
+//         success: false,
+//         message: error.message,
+//         stack: error.stack
+//     });
+// }
+
+// });
+
+// // START SERVER
+// app.listen(PORT, () => {
+
+//     console.log(`Server running on port ${PORT}`);
+
+// });
+
+
+
+
+
 require("dotenv").config();
 
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const PORT = process.env.PORT || 5000;
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const multer = require("multer");
 
-// const path = require("path");
-
-const express = require("express");
-
-const mongoose = require("mongoose");
-
-const cors = require("cors");
+const cloudinary = require("./config/cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 const Order = require("./models/Order");
-
 const Product = require("./models/Product");
-
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
+const PORT = process.env.PORT || 5000;
 
-// IMAGE STORAGE
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
+/* ===========================
+   CLOUDINARY STORAGE
+=========================== */
 
 const storage = new CloudinaryStorage({
-    cloudinary,
-    params: {
-        folder: "shopx-products",
-        allowed_formats: ["jpg","jpeg","png","webp"]
-    }
+  cloudinary: cloudinary,
+  params: async (req, file) => ({
+    folder: "shopx-products",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    public_id: Date.now().toString(),
+  }),
 });
 
 const upload = multer({ storage });
 
+/* ===========================
+   MIDDLEWARE
+=========================== */
 
-// STATIC FOLDER
-
-
-// MIDDLEWARE
 app.use(cors());
-
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
 
+/* ===========================
+   MONGODB
+=========================== */
 
-
-
-// MONGODB CONNECT
-mongoose.connect(process.env.MONGO_URI)
-
-.then(() => {
-
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
     console.log("MongoDB Connected");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
-})
+/* ===========================
+   HOME
+=========================== */
 
-.catch((error) => {
-
-    console.log(error);
-
+app.get("/", (req, res) => {
+  res.send("ShopX Backend Running");
 });
 
 
 
-// TEST ROUTE
-app.get("/", (req,res) => {
+/* ===========================
+   SAVE ORDER
+=========================== */
 
-    res.send("ShopX Backend Running");
-
-});
-
-
-
-// SAVE ORDER API
-app.post("/orders", async (req,res) => {
+app.post("/orders", async (req, res) => {
+  try {
     const price = Number(req.body.productPrice);
 
-const discount = Math.round(price * 0.20);
+    const discount = Math.round(price * 0.2);
+    const deliveryCharge = 49;
+    const totalAmount = price - discount + deliveryCharge;
 
-const deliveryCharge = 49;
+    const newOrder = new Order({
+      customerName: req.body.customerName,
+      customerPhone: req.body.customerPhone,
+      customerAddress: req.body.customerAddress,
+      paymentMethod: req.body.paymentMethod,
 
-const totalAmount = price - discount + deliveryCharge;
+      productName: req.body.productName,
+      productPrice: price,
+      productImage: req.body.productImage,
+      productSize: req.body.productSize,
 
-    try{
+      userEmail: req.body.userEmail,
+      description: req.body.description,
 
-        const newOrder = new Order({
+      discount,
+      deliveryCharge,
+      totalAmount,
+    });
 
-    customerName:req.body.customerName,
+    await newOrder.save();
 
-    customerPhone:req.body.customerPhone,
+    res.status(201).json({
+      message: "Order Saved Successfully",
+    });
+  } catch (error) {
+    console.error(error);
 
-    customerAddress:req.body.customerAddress,
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
 
-    paymentMethod:req.body.paymentMethod,
+/* ===========================
+   GET ALL ORDERS
+=========================== */
 
-    productName:req.body.productName,
+app.get("/orders", async (req, res) => {
+  try {
+    const orders = await Order.find();
 
-    productPrice:price,
+    res.json(orders);
+  } catch (error) {
+    console.error(error);
 
-    productImage:req.body.productImage,
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
 
-    productSize:req.body.productSize,
+/* ===========================
+   DELETE ORDER
+=========================== */
 
-    userEmail:req.body.userEmail,
+app.delete("/orders/:id", async (req, res) => {
+  try {
+    await Order.findByIdAndDelete(req.params.id);
 
-    description:req.body.description,
+    res.json({
+      message: "Order Deleted",
+    });
+  } catch (error) {
+    console.error(error);
 
-    discount,
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
 
-    deliveryCharge,
+/* ===========================
+   UPDATE ORDER STATUS
+=========================== */
 
-    totalAmount
+app.put("/orders/:id", async (req, res) => {
+  try {
+    await Order.findByIdAndUpdate(req.params.id, {
+      status: "Delivered",
+    });
 
+    res.json({
+      message: "Order Delivered",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 });
 
 
 
-        // SAVE ORDER
-        await newOrder.save();
+/* ===========================
+   ADD PRODUCT
+=========================== */
 
-
-
-        res.status(201).json({
-
-            message:"Order Saved Successfully"
-
-        });
-
+app.post("/products", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Please upload an image",
+      });
     }
 
-    catch(error){
+    const newProduct = new Product({
+      name: req.body.name,
+      price: Number(req.body.price),
+      category: req.body.category,
+      description: req.body.description,
+      image: req.file.path, // Cloudinary URL
+    });
 
-        console.log(error);
+    await newProduct.save();
 
+    res.status(201).json({
+      message: "Product Added Successfully",
+    });
+  } 
+  catch (error) {
+    console.log("========== PRODUCT ERROR ==========");
+    console.dir(error, { depth: null });
 
+    console.log("Message:", error.message);
+    console.log("Stack:", error.stack);
 
-        res.status(500).json({
-
-            message:"Server Error"
-
-        });
-
-    }
-
+    res.status(500).json({
+        success: false,
+        message: error.message
+    });
+}
 });
 
+/* ===========================
+   GET PRODUCTS
+=========================== */
 
+app.get("/products", async (req, res) => {
+  try {
+    const products = await Product.find();
 
-// GET ALL ORDERS
-app.get("/orders", async (req,res) => {
+    res.json(products);
+  } catch (error) {
+    console.error(error);
 
-    try{
-
-        const orders =
-        await Order.find();
-
-
-
-        res.json(orders);
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 });
 
+/* ===========================
+   UPDATE PRODUCT
+=========================== */
 
+app.put("/products/:id", upload.single("image"), async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
 
-// DELETE ORDER
-app.delete("/orders/:id",
-async (req,res) => {
-
-    try{
-
-        await Order.findByIdAndDelete(
-            req.params.id
-        );
-
-
-
-        res.json({
-
-            message:"Order Deleted"
-
-        });
-
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
     }
 
-    catch(error){
+    let image = product.image;
 
-        console.log(error);
-
+    if (req.file) {
+      image = req.file.path;
     }
 
+    await Product.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      price: Number(req.body.price),
+      category: req.body.category,
+      description: req.body.description,
+      image,
+    });
+
+    res.json({
+      message: "Product Updated Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 });
 
+/* ===========================
+   DELETE PRODUCT
+=========================== */
 
-// ADD PRODUCT
+app.delete("/products/:id", async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
 
-// ADD PRODUCT
+    res.json({
+      message: "Product Deleted Successfully",
+    });
+  } catch (error) {
+    console.error(error);
 
-app.post(
-
-"/products",
-
-upload.single("image"),
-
-async (req,res) => {
-
-    console.log(req.body);
-
-    try{
-
-       const newProduct = new Product({
-
-    name:req.body.name,
-
-    price:req.body.price,
-
-    category:req.body.category,
-
-    description:
-    req.body.description,
-
-    image:req.file.path
-    
-    
-
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 });
 
+/* ===========================
+   START SERVER
+=========================== */
 
-
-        await newProduct.save();
-
-
-
-        res.json({
-
-            message:"Product Added"
-
-        });
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
-});
-
-// GET PRODUCTS
-
-app.get("/products", async (req,res) => {
-
-    try{
-
-        const products =
-        await Product.find();
-
-
-
-        res.json(products);
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
-});
-
-// UPDATE PRODUCT
-
-// UPDATE PRODUCT
-
-app.put(
-
-"/products/:id",
-
-upload.single("image"),
-
-async (req,res) => {
-
-    try{
-
-        const product =
-        await Product.findById(
-
-            req.params.id
-
-        );
-
-
-
-        // OLD IMAGE
-        let imagePath =
-        product.image;
-
-
-
-        // NEW IMAGE
-        if(req.file){
-
-          imagePath = req.file.path;  
-
-        }
-
-
-
-        await Product.findByIdAndUpdate(
-
-            req.params.id,
-
-            {
-
-                name:req.body.name,
-
-                price:req.body.price,
-
-                category:req.body.category,
-
-                image:imagePath
-
-            }
-
-        );
-
-
-
-        res.json({
-
-            message:"Product Updated"
-
-        });
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
-});
-
-
-
-// DELETE PRODUCT
-
-app.delete("/products/:id",
-async (req,res) => {
-
-    try{
-
-        await Product.findByIdAndDelete(
-
-            req.params.id
-
-        );
-
-
-
-        res.json({
-
-            message:"Product Deleted"
-
-        });
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
-});
-
-
-// UPDATE ORDER STATUS
-
-app.put("/orders/:id",
-async (req,res) => {
-
-    try{
-
-        await Order.findByIdAndUpdate(
-
-            req.params.id,
-
-            {
-
-                status:"Delivered"
-
-            }
-
-        );
-
-
-
-        res.json({
-
-            message:"Order Delivered"
-
-        });
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
-});
-
-// START SERVER
 app.listen(PORT, () => {
-
-    console.log(`Server running on port ${PORT}`);
-
+  console.log(`Server running on port ${PORT}`);
 });
