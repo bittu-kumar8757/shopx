@@ -1,99 +1,233 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<title>Login | ShopX</title>
 
-<title>Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
 *{
-
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Poppins",sans-serif;
 }
 
 body{
 
-    height:100vh;
+background:linear-gradient(135deg,#0f172a,#1e293b);
 
-    display:flex;
+display:flex;
 
-    justify-content:center;
+justify-content:center;
 
-    align-items:center;
+align-items:center;
 
-    background:#f1f3f6;
+min-height:100vh;
+
+padding:20px;
+
 }
 
 .login-box{
 
-    width:350px;
+width:100%;
 
-    background:white;
+max-width:420px;
 
-    padding:30px;
+background:white;
 
-    border-radius:15px;
+padding:35px;
 
-    display:flex;
+border-radius:20px;
 
-    flex-direction:column;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
 
-    gap:15px;
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+animation:popup .4s ease;
+
+}
+
+@keyframes popup{
+
+from{
+
+opacity:0;
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+.login-box h1{
+
+text-align:center;
+
+color:#7c3aed;
+
+font-size:34px;
+
+margin-bottom:5px;
+
+}
+
+.login-box p{
+
+text-align:center;
+
+color:#666;
+
+font-size:15px;
+
 }
 
 input{
 
-    padding:14px;
+width:100%;
 
-    border:1px solid #ccc;
+padding:15px;
 
-    border-radius:10px;
+border:1px solid #ccc;
 
-    font-size:16px;
+border-radius:12px;
+
+font-size:16px;
+
+outline:none;
+
+transition:.3s;
+
+}
+
+input:focus{
+
+border-color:#8b5cf6;
+
+box-shadow:0 0 10px rgba(139,92,246,.25);
+
 }
 
 button{
 
-    padding:14px;
+width:100%;
 
-    border:none;
+padding:15px;
 
-    border-radius:10px;
+border:none;
 
-    background:#8b5cf6;
+border-radius:12px;
 
-    color:white;
+background:linear-gradient(90deg,#7c3aed,#9333ea);
 
-    font-size:18px;
+color:white;
 
-    cursor:pointer;
+font-size:17px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:.3s;
+
 }
 
-h1{
+button:hover{
 
-    text-align:center;
+transform:translateY(-2px);
+
+box-shadow:0 10px 20px rgba(124,58,237,.35);
+
 }
 
-p{
+button:disabled{
 
-    text-align:center;
+opacity:.7;
+
+cursor:not-allowed;
+
 }
 
 a{
 
-    color:#8b5cf6;
+text-decoration:none;
 
-    text-decoration:none;
+color:#7c3aed;
+
+font-weight:600;
+
+}
+
+a:hover{
+
+text-decoration:underline;
+
+}
+
+/* Tablet */
+
+@media(max-width:768px){
+
+.login-box{
+
+max-width:450px;
+
+padding:30px;
+
+}
+
+}
+
+/* Mobile */
+
+@media(max-width:480px){
+
+body{
+
+padding:15px;
+
+}
+
+.login-box{
+
+padding:22px;
+
+border-radius:15px;
+
+}
+
+.login-box h1{
+
+font-size:28px;
+
+}
+
+input,
+button{
+
+padding:13px;
+
+font-size:15px;
+
+}
+
 }
 
 </style>
@@ -102,175 +236,139 @@ a{
 
 <body>
 
-
-
 <div class="login-box">
 
-    <h1>Login</h1>
+<h1>Welcome Back</h1>
 
+<p>Login to your ShopX account</p>
 
+<input
+type="email"
+id="email"
+placeholder="Enter Email">
 
-    <input
-    type="email"
-    id="email"
-    placeholder="Email">
+<input
+type="password"
+id="password"
+placeholder="Enter Password">
 
+<button id="loginBtn">
 
+Login
 
-    <input
-    type="password"
-    id="password"
-    placeholder="Password">
+</button>
 
+<p>
 
+Don't have an account?
 
-    <button id="loginBtn">
+<a href="signup.html">
 
-        Login
+Signup
 
-    </button>
+</a>
 
-
-
-    <p>
-
-        Don't have account?
-
-        <a href="signup.html">
-
-            Signup
-
-        </a>
-
-    </p>
+</p>
 
 </div>
-
-
 
 <script>
 
 const loginBtn =
 document.getElementById("loginBtn");
 
+loginBtn.addEventListener("click",async()=>{
 
+const email =
+document.getElementById("email").value.trim();
 
-loginBtn.addEventListener("click",
-async () => {
+const password =
+document.getElementById("password").value.trim();
 
-    const email =
-    document.getElementById("email").value;
+if(email==="" || password===""){
 
-    const password =
-    document.getElementById("password").value;
+alert("Please fill all fields");
 
+return;
 
+}
 
-    // VALIDATION
-    if(
+loginBtn.disabled=true;
 
-        email === "" ||
+loginBtn.innerHTML="Logging in...";
 
-        password === ""
+try{
 
-    ){
+const response=await fetch(
 
-        alert("Please fill all fields");
+"https://shopx-backends.onrender.com/api/users/login",
 
-        return;
-    }
+{
 
+method:"POST",
 
+headers:{
+"Content-Type":"application/json"
+},
 
-    try{
+body:JSON.stringify({
 
-        const response = await fetch(
+email,
+password
 
-            "https://shopx-backends.onrender.com/api/users/login",
+})
 
-            {
+}
 
-                method:"POST",
+);
 
-                headers:{
-                    "Content-Type":"application/json"
-                },
+const data=await response.json();
 
-                body:JSON.stringify({
+alert(data.message);
 
-                    email,
-                    password
+if(data.message==="Login Successful"){
 
-                })
+localStorage.setItem(
 
-            }
+"user",
 
-        );
+JSON.stringify(data.user)
 
+);
 
+if(data.user.role==="admin"){
 
-        const data =
-        await response.json();
+window.location.href="admin.html";
 
+}else{
 
+window.location.href="index.html";
 
-        alert(data.message);
+}
 
+}
 
+}
 
-        // LOGIN SUCCESS
-        if(
+catch(error){
 
-            data.message ===
-            "Login Successful"
+console.log(error);
 
-        ){
+alert("Server Error");
 
-            // SAVE USER
-            localStorage.setItem(
+}
 
-                "user",
+finally{
 
-                JSON.stringify(data.user)
+loginBtn.disabled=false;
 
-            );
+loginBtn.innerHTML="Login";
 
-
-
-            // ADMIN LOGIN
-            if(
-
-                data.user.role ===
-                "admin"
-
-            ){
-
-                window.location.href =
-                "admin.html";
-
-            }
-
-            else{
-
-                window.location.href =
-                "index.html";
-
-            }
-
-        }
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
+}
 
 });
 
 </script>
 
 </body>
-
 </html>

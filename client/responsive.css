@@ -1,0 +1,1074 @@
+/* /* ===========================
+   TABLET
+=========================== */
+
+@media (max-width:992px){
+
+body{
+padding:15px;
+}
+
+/* NAVBAR */
+
+nav{
+
+flex-direction:column;
+
+align-items:center;
+
+gap:18px;
+
+}
+
+nav h1{
+
+font-size:34px;
+
+}
+
+.search-box{
+
+width:100%;
+
+max-width:700px;
+
+display:flex;
+
+}
+
+.search-box input{
+
+width:100%;
+
+}
+
+.auth-buttons{
+
+width:100%;
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+}
+
+.categories{
+
+justify-content:center;
+
+}
+
+}
+
+
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width:768px){
+
+body{
+
+padding:12px;
+
+}
+
+/* NAVBAR */
+
+nav{
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+nav h1{
+
+font-size:30px;
+
+}
+
+/* SEARCH */
+
+.search-box{
+
+width:100%;
+
+flex-direction:column;
+
+}
+
+.search-box input{
+
+width:100%;
+
+font-size:15px;
+
+}
+
+.search-box button{
+
+width:100%;
+
+}
+
+/* LOGIN BUTTONS */
+
+.auth-buttons{
+
+width:100%;
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:10px;
+
+}
+
+.auth-buttons a,
+
+.auth-buttons button{
+
+width:100%;
+
+text-align:center;
+
+}
+
+/* CATEGORY */
+
+.categories{
+
+justify-content:center;
+
+gap:10px;
+
+}
+
+.category-btn{
+
+padding:10px 16px;
+
+font-size:14px;
+
+}
+
+}
+
+
+
+/* ===========================
+   SMALL MOBILE
+=========================== */
+
+@media(max-width:480px){
+
+nav h1{
+
+font-size:28px;
+
+}
+
+.search-box input{
+
+padding:13px;
+
+}
+
+.search-box button{
+
+padding:13px;
+
+}
+
+.auth-buttons{
+
+grid-template-columns:1fr;
+
+}
+
+.category-btn{
+
+width:100%;
+
+}
+
+.categories{
+
+flex-direction:column;
+
+}
+
+}
+
+/* ===========================
+   PRODUCTS
+=========================== */
+
+@media (max-width:992px){
+
+.products-container{
+
+grid-template-columns:
+repeat(3,1fr);
+
+padding:15px;
+
+gap:18px;
+
+}
+
+.product-card img{
+
+height:230px;
+
+}
+
+}
+
+
+
+/* ===========================
+   TABLET
+=========================== */
+
+@media (max-width:768px){
+
+.products-container{
+
+grid-template-columns:
+repeat(2,1fr);
+
+padding:10px;
+
+gap:15px;
+
+}
+
+.product-card{
+
+border-radius:15px;
+
+}
+
+.product-card img{
+
+height:210px;
+
+}
+
+.product-info{
+
+padding:12px;
+
+}
+
+.product-info h3{
+
+font-size:17px;
+
+}
+
+.product-info p{
+
+font-size:15px;
+
+}
+
+.product-buttons{
+
+flex-direction:column;
+
+gap:8px;
+
+}
+
+.product-buttons button{
+
+width:100%;
+
+padding:13px;
+
+font-size:15px;
+
+}
+
+}
+
+
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width:480px){
+
+.products-container{
+
+grid-template-columns:1fr;
+
+padding:8px;
+
+gap:18px;
+
+}
+
+.product-card{
+
+border-radius:12px;
+
+}
+
+.product-card img{
+
+height:240px;
+
+}
+
+.product-info{
+
+padding:15px;
+
+}
+
+.product-info h3{
+
+font-size:18px;
+
+}
+
+.product-info p{
+
+font-size:16px;
+
+}
+
+.product-buttons{
+
+flex-direction:column;
+
+gap:10px;
+
+}
+
+.product-buttons button{
+
+width:100%;
+
+font-size:16px;
+
+padding:14px;
+
+}
+
+}
+
+
+
+/* ===========================
+   CART SIDEBAR
+=========================== */
+
+@media (max-width:768px){
+
+.cart-sidebar{
+
+width:100%;
+
+right:-100%;
+
+}
+
+.cart-sidebar.active{
+
+right:0;
+
+}
+
+.cart-header h2{
+
+font-size:24px;
+
+}
+
+.cart-footer h3{
+
+font-size:20px;
+
+}
+
+.checkout-btn{
+
+font-size:17px;
+
+padding:15px;
+
+}
+
+}
+
+
+
+/* ===========================
+   CART ITEMS
+=========================== */
+
+@media (max-width:480px){
+
+.cart-item{
+
+flex-direction:column;
+
+align-items:center;
+
+text-align:center;
+
+}
+
+.cart-item img{
+
+width:100px;
+
+height:100px;
+
+}
+
+.cart-item-info{
+
+width:100%;
+
+}
+
+.remove-btn{
+
+width:100%;
+
+margin-top:10px;
+
+}
+
+}
+
+/* ==========================================
+        VARIANT MODAL
+========================================== */
+
+@media (max-width:992px){
+
+.variant-box{
+
+width:90%;
+max-width:420px;
+
+padding:25px;
+
+}
+
+#variantImage{
+
+height:220px;
+
+}
+
+}
+
+
+
+@media (max-width:768px){
+
+.variant-box{
+
+width:92%;
+
+padding:20px;
+
+}
+
+#variantImage{
+
+height:200px;
+
+}
+
+.variant-box h2{
+
+font-size:24px;
+
+}
+
+.variant-box p{
+
+font-size:15px;
+
+}
+
+.sizes{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:10px;
+
+}
+
+.size-btn{
+
+width:100%;
+
+padding:12px;
+
+font-size:15px;
+
+}
+
+#continueVariant{
+
+width:100%;
+
+padding:15px;
+
+font-size:16px;
+
+}
+
+}
+
+
+
+@media (max-width:480px){
+
+.variant-box{
+
+width:95%;
+
+padding:18px;
+
+border-radius:15px;
+
+}
+
+#variantImage{
+
+height:180px;
+
+}
+
+.variant-box h2{
+
+font-size:20px;
+
+}
+
+.variant-box p{
+
+font-size:14px;
+
+}
+
+#closeVariant{
+
+font-size:22px;
+
+}
+
+}
+
+
+
+/* ==========================================
+        ADDRESS MODAL
+========================================== */
+
+@media (max-width:992px){
+
+.address-box{
+
+width:92%;
+
+max-width:650px;
+
+}
+
+}
+
+
+
+@media (max-width:768px){
+
+.address-box{
+
+width:95%;
+
+padding:20px;
+
+}
+
+.address-box h2{
+
+font-size:24px;
+
+}
+
+.address-box input,
+.address-box select{
+
+padding:14px;
+
+font-size:15px;
+
+}
+
+.city-state{
+
+flex-direction:column;
+
+gap:12px;
+
+}
+
+#continueAddress{
+
+width:100%;
+
+padding:15px;
+
+font-size:16px;
+
+}
+
+}
+
+
+
+@media (max-width:480px){
+
+.address-box{
+
+padding:18px;
+
+border-radius:15px;
+
+}
+
+.address-box h2{
+
+font-size:20px;
+
+text-align:center;
+
+}
+
+.address-box input,
+.address-box select{
+
+font-size:14px;
+
+padding:13px;
+
+}
+
+#closeAddress{
+
+font-size:22px;
+
+}
+
+}
+
+
+/* ==========================================
+        ORDER SUMMARY PAGE
+========================================== */
+
+@media (max-width:992px){
+
+.summary-page{
+
+padding:20px;
+
+display:flex;
+flex-direction:column;
+
+}
+
+.left-summary,
+.right-summary{
+
+width:100%;
+
+}
+
+.price-card{
+
+position:static;
+
+}
+
+.product-summary{
+
+flex-direction:column;
+
+align-items:center;
+
+text-align:center;
+
+}
+
+.product-summary img{
+
+width:220px;
+
+}
+
+}
+
+
+
+@media (max-width:768px){
+
+.summary-page{
+
+padding:15px;
+
+}
+
+.step-box{
+
+flex-wrap:wrap;
+
+gap:10px;
+
+}
+
+.line{
+
+width:50px;
+
+}
+
+.summary-card{
+
+padding:18px;
+
+}
+
+.product-summary{
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+.product-summary img{
+
+width:180px;
+
+}
+
+.product-details h2{
+
+font-size:22px;
+
+}
+
+.price-card{
+
+padding:20px;
+
+}
+
+.price-row{
+
+font-size:16px;
+
+}
+
+.total-row{
+
+font-size:20px;
+
+}
+
+#continuePayment{
+
+width:100%;
+
+padding:15px;
+
+font-size:16px;
+
+}
+
+}
+
+
+
+@media (max-width:480px){
+
+.summary-page{
+
+padding:10px;
+
+}
+
+.summary-card{
+
+padding:15px;
+
+}
+
+.product-summary img{
+
+width:150px;
+
+}
+
+.product-details h2{
+
+font-size:20px;
+
+}
+
+.product-details p{
+
+font-size:14px;
+
+}
+
+.price-card{
+
+padding:15px;
+
+}
+
+.price-row{
+
+font-size:15px;
+
+}
+
+.total-row{
+
+font-size:18px;
+
+}
+
+.step{
+
+width:34px;
+
+height:34px;
+
+font-size:14px;
+
+}
+
+.line{
+
+width:35px;
+
+}
+
+}
+
+
+
+/* ==========================================
+        PAYMENT PAGE
+========================================== */
+
+@media (max-width:992px){
+
+.payment-container{
+
+flex-direction:column;
+
+}
+
+.payment-left,
+.payment-right{
+
+width:100%;
+
+}
+
+}
+
+
+
+@media (max-width:768px){
+
+.payment-page{
+
+padding:18px;
+
+}
+
+.payment-left{
+
+padding:20px;
+
+}
+
+.payment-left h1{
+
+font-size:26px;
+
+}
+
+.cod-box{
+
+padding:20px;
+
+}
+
+.payment-price-box{
+
+padding:20px;
+
+}
+
+.payment-row{
+
+font-size:16px;
+
+}
+
+.total-payment{
+
+font-size:20px;
+
+}
+
+#placeFinalOrder{
+
+width:100%;
+
+padding:15px;
+
+font-size:16px;
+
+}
+
+}
+
+
+
+@media (max-width:480px){
+
+.payment-page{
+
+padding:12px;
+
+}
+
+.payment-left{
+
+padding:15px;
+
+}
+
+.payment-left h1{
+
+font-size:22px;
+
+text-align:center;
+
+}
+
+.cod-box{
+
+padding:15px;
+
+}
+
+.cod-box h2{
+
+font-size:18px;
+
+}
+
+.cod-box p{
+
+font-size:14px;
+
+}
+
+.payment-price-box{
+
+padding:15px;
+
+}
+
+.payment-row{
+
+font-size:15px;
+
+}
+
+.total-payment{
+
+font-size:18px;
+
+}
+
+#placeFinalOrder{
+
+padding:14px;
+
+font-size:15px;
+
+}
+
+}
+
+
+
+/* ==========================================
+        EXTRA MOBILE FIXES
+========================================== */
+
+@media (max-width:480px){
+
+img{
+
+max-width:100%;
+
+height:auto;
+
+}
+
+button{
+
+min-height:45px;
+
+}
+
+input,
+select,
+textarea{
+
+font-size:16px;
+
+}
+
+body{
+
+overflow-x:hidden;
+
+}
+
+.container{
+
+width:100%;
+
+padding:0;
+
+}
+
+} 
