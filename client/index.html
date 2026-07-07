@@ -2,495 +2,639 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Commerce</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsive.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>ShopX</title>
+
+<link rel="stylesheet" href="changeCSS.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
-    <div class="container">
 
-        <!-- NAVBAR -->
-        <nav>
-            <h1>ShopX</h1>
+<!-- ================= HOME PAGE ================= -->
 
-            <div class="search-box">
+<div id="homePage">
 
-                <input type="text" id="searchInput" placeholder="Search products...">
+<div class="container">
 
-                <button id="searchBtn">Search</button>
-            </div>
+<!-- ================= NAVBAR ================= -->
 
-            <div class="cart-icon">
-                🛒 <span id="cartCount">0</span>
-            </div>
+<nav>
+
+<h1>ShopX</h1>
+
+<div class="search-box">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search Clothes...">
+
+<button id="searchBtn">
+
+Search
+
+</button>
+
+</div>
+
+<div class="cart-icon">
+
+🛒
+
+<span id="cartCount">
+
+0
+
+</span>
+
+</div>
 
 <div class="auth-buttons">
 
-    <a href="login.html"
-    id="loginLink">
+<a
+href="login.html"
+id="loginLink">
 
-        Login
+Login
 
-    </a>
+</a>
 
+<a
+href="signup.html"
+id="signupLink">
 
+Signup
 
-    <a href="signup.html"
-    id="signupLink">
+</a>
 
-        Signup
+<button id="profileBtn">
 
-    </a>
+Profile
 
+</button>
 
+<button id="logoutBtn">
 
-    <button id="profileBtn">
+Logout
 
-        Profile
-
-    </button>
-
-
-
-    <button id="logoutBtn">
-
-        Logout
-
-    </button>
+</button>
 
 </div>
-            
-        </nav>
 
-        <!-- CATEGORY BUTTONS -->
-        <div class="categories">
-            <button class="category-btn active">All</button>
-            <button class="category-btn">Electronics</button>
-            <button class="category-btn">Clothing</button>
-            <button class="category-btn">Shoes</button>
-            <button class="category-btn">Accessories</button>
-        </div>
+</nav>
 
-        <!-- PRODUCTS -->
-        <div class="products-container">
+<!-- ================= CATEGORY ================= -->
 
-        </div>
+<div class="categories">
 
-    </div>
-    </div>
+<button class="category-btn active">
 
-    <!-- CART SIDEBAR -->
+All
 
-    <div class="cart-sidebar" id="cartSidebar">
+</button>
 
-        <div class="cart-header">
+<button class="category-btn">
 
-            <h2>Your Cart</h2>
+T-Shirts
 
-            <span id="closeCart">✖</span>
+</button>
 
-        </div>
+<button class="category-btn">
 
+Shirts
 
+</button>
 
-        <div class="cart-items" id="cartItems">
+<button class="category-btn">
 
-        </div>
+Jeans
 
+</button>
 
+<button class="category-btn">
 
-        <div class="cart-footer">
+Hoodies
 
-            <h3>Total: $<span id="cartTotal">0</span></h3>
+</button>
 
-            <button id="checkoutBtn" class="checkout-btn">
-                Place Order
-            </button>
+<button class="category-btn">
 
-        </div>
+Jackets
 
-    </div>
+</button>
 
+<button class="category-btn">
 
+Track Pants
 
+</button>
 
-    <!-- VARIANT MODAL -->
+</div>
 
-    <div class="variant-modal" id="variantModal">
+<!-- ================= PRODUCTS ================= -->
 
-        <div class="variant-box">
-            <span id="closeVariant">
-                ✖
-            </span>
-
-            <img id="variantImage">
-
-            <h2 id="variantTitle"></h2>
-
-            <p id="variantPrice"></p>
-
-
-
-            <h3>Select Variant</h3>
-
-
-
-            <div class="sizes">
-
-                <button class="size-btn">S</button>
-
-                <button class="size-btn">M</button>
-
-                <button class="size-btn">L</button>
-
-                <button class="size-btn">XL</button>
-
-            </div>
-
-
-
-            <button id="continueVariant">
-                Continue
-            </button>
-
-        </div>
+<div class="products-container">
 
     </div>
 
+</div>
 
+</div>
 
+<!-- ================= CART SIDEBAR ================= -->
 
+<div class="cart-sidebar" id="cartSidebar">
 
-    <!-- ADDRESS MODAL -->
+<div class="cart-header">
 
-    <div class="address-modal" id="addressModal">
+<h2>Your Cart</h2>
 
-        <div class="address-box">
+<span id="closeCart">
 
-            <span id="closeAddress">
-                ✖
-            </span>
+✖
 
-            <h2>Enter Delivery Address</h2>
+</span>
 
+</div>
 
+<div
+class="cart-items"
+id="cartItems">
 
-            <select id="country">
+</div>
 
-                <option>India</option>
+<div class="cart-footer">
 
-            </select>
+<h3>
 
+Total :
 
+₹<span id="cartTotal">
 
-            <input type="text" id="customerName" placeholder="Full Name">
+0
 
+</span>
 
+</h3>
 
-            <input type="text" id="customerPhone" placeholder="Mobile Number">
+<button
+id="checkoutBtn"
+class="checkout-btn">
 
+Place Order
 
+</button>
 
-            <input type="text" id="customerPincode" placeholder="Pincode">
+</div>
 
+</div>
 
+<!-- ================= VARIANT MODAL ================= -->
 
-            <input type="text" id="customerHouse" placeholder="Flat, House no, Building">
+<div
+class="variant-modal"
+id="variantModal">
 
+<div class="variant-box">
 
+<span id="closeVariant">
 
-            <input type="text" id="customerArea" placeholder="Area, Street, Village">
+✖
 
+</span>
 
+<img id="variantImage">
 
-            <input type="text" id="customerLandmark" placeholder="Landmark">
+<h2 id="variantTitle">
 
+</h2>
 
+<p id="variantPrice">
 
-            <div class="city-state">
+</p>
 
-                <input type="text" id="customerCity" placeholder="Town/City">
+<h3>
 
+Select Size
 
+</h3>
 
-                <select id="customerState">
+<div class="sizes">
 
-                    <option>Bihar</option>
+<button class="size-btn">
 
-                    <option>Delhi</option>
+S
 
-                    <option>UP</option>
+</button>
 
-                    <option>Maharashtra</option>
+<button class="size-btn">
 
-                </select>
+M
 
-            </div>
+</button>
 
+<button class="size-btn">
 
+L
 
-            <button id="continueAddress">
+</button>
 
-                Continue
+<button class="size-btn">
 
-            </button>
+XL
 
-        </div>
+</button>
 
-    </div>
+</div>
 
-    <!-- ORDER SUMMARY PAGE -->
+<button id="continueVariant">
 
-    <div class="summary-page" id="summaryPage">
+Continue
 
-        <!-- LEFT SIDE -->
-        <div class="left-summary">
+</button>
 
-            <!-- STEP -->
-            <div class="step-box">
+</div>
 
-                <div class="step active-step">
-                    1
-                </div>
+</div>
 
-                <div class="line"></div>
+<!-- ================= ADDRESS MODAL ================= -->
 
-                <div class="step active-step">
-                    2
-                </div>
+<div class="address-modal" id="addressModal">
 
-                <div class="line"></div>
+<div class="address-box">
 
-                <div class="step">
-                    3
-                </div>
+<span id="closeAddress">
 
-            </div>
+✖
 
+</span>
 
+<h2>
 
-            <!-- ADDRESS -->
-            <div class="summary-card">
+Delivery Address
 
-                <h3>Deliver To:</h3>
+</h2>
 
-                <p id="summaryName"></p>
+<select id="country">
 
-                <p id="summaryAddress"></p>
+<option>
 
-                <p id="summaryPhone"></p>
+India
 
-            </div>
+</option>
 
+</select>
 
+<input
+type="text"
+id="customerName"
+placeholder="Full Name">
 
-            <!-- PRODUCT -->
-            <div class="summary-card product-summary">
+<input
+type="text"
+id="customerPhone"
+placeholder="Mobile Number">
 
-                <img id="summaryImage">
+<input
+type="text"
+id="customerPincode"
+placeholder="Pincode">
 
-                <div class="product-details">
+<input
+type="text"
+id="customerHouse"
+placeholder="Flat / House No">
 
-                    <h2 id="summaryProduct"></h2>
+<input
+type="text"
+id="customerArea"
+placeholder="Area / Street">
 
-                    <p>Size: <span id="summarySize"></span></p>
+<input
+type="text"
+id="customerLandmark"
+placeholder="Landmark">
 
-                    <h3>$<span id="summaryPrice"></span></h3>
+<div class="city-state">
 
-                    <p class="delivery-text">
-                        Delivery in 3 Days
-                    </p>
+<input
+type="text"
+id="customerCity"
+placeholder="City">
 
-                </div>
+<select id="customerState">
 
-            </div>
+<option>Bihar</option>
 
-        </div>
+<option>Delhi</option>
 
+<option>UP</option>
 
+<option>Maharashtra</option>
 
-        <!-- RIGHT SIDE -->
-        <div class="right-summary">
+</select>
 
-            <div class="price-card">
+</div>
 
-                <h2>Price Details</h2>
+<button id="continueAddress">
 
-                <hr>
+Continue
 
+</button>
 
+</div>
 
-                <div class="price-row">
+</div>
 
-                    <span>Price</span>
+<!-- ================= ORDER SUMMARY ================= -->
 
-                    <span id="finalPrice"></span>
+<div class="summary-page" id="summaryPage">
 
-                </div>
+<div class="left-summary">
 
+<div class="step-box">
 
+<div class="step active-step">
 
-                <div class="price-row">
+1
 
-                    <span>Discount</span>
+</div>
 
-                    <span class="green-text">
-                        -$20
-                    </span>
+<div class="line"></div>
 
-                </div>
+<div class="step active-step">
 
+2
 
+</div>
 
-                <div class="price-row">
+<div class="line"></div>
 
-                    <span>Delivery</span>
+<div class="step">
 
-                    <span class="green-text">
-                        FREE
-                    </span>
+3
 
-                </div>
+</div>
 
+</div>
 
+<div class="summary-card">
 
-                <hr>
+<h3>
 
+Deliver To
 
+</h3>
 
-                <div class="price-row total-row">
+<p id="summaryName"></p>
 
-                    <span>Total</span>
+<p id="summaryAddress"></p>
 
-                    <span id="totalAmount"></span>
+<p id="summaryPhone"></p>
 
-                </div>
+</div>
 
+<div class="summary-card product-summary">
 
+<img id="summaryImage">
 
-                <button id="continuePayment">
+<div class="product-details">
 
-                    Continue
+<h2 id="summaryProduct"></h2>
 
-                </button>
+<p>
 
-            </div>
+Size :
 
-        </div>
+<span id="summarySize"></span>
 
-    </div>
+</p>
 
+<h3>
 
+₹<span id="summaryPrice"></span>
 
-    <!-- PAYMENT PAGE -->
+</h3>
 
-    <div class="payment-page" id="paymentPage">
+<p class="delivery-text">
 
-        <div class="payment-container">
+Delivery in 3 Days 🚚
 
-            <!-- LEFT -->
-            <div class="payment-left">
+</p>
 
-                <h1>Cash On Delivery</h1>
+</div>
 
-                <div class="cod-box">
+</div>
 
-                    <h2>
-                        🚚 Pay Cash On Delivery
-                    </h2>
+</div>
 
-                    <p>
-                        Pay when your order arrives.
-                    </p>
+<div class="right-summary">
 
-                </div>
+<div class="price-card">
 
-            </div>
+<h2>
 
+Price Details
 
+</h2>
 
-            <!-- RIGHT -->
-            <div class="payment-right">
+<hr>
 
-                <div class="payment-price-box">
+<div class="price-row">
 
-                    <h2>Price Details</h2>
+<span>Price</span>
 
-                    <hr>
+<span id="finalPrice"></span>
 
+</div>
 
+<div class="price-row">
 
-                    <div class="payment-row">
+<span>Discount</span>
 
-                        <span>Product Price</span>
+<span class="green-text">
 
-                        <span id="paymentPrice"></span>
+-20%
 
-                    </div>
+</span>
 
+</div>
 
+<div class="price-row">
 
-                    <div class="payment-row">
+<span>Delivery</span>
 
-                        <span>Discount (20%)</span>
+<span class="green-text">
 
-                        <span class="green-text" id="discountPrice">
-                            -$0
-                        </span>
+FREE
 
-                    </div>
+</span>
 
+</div>
 
+<hr>
 
-                    <div class="payment-row">
+<div class="price-row total-row">
 
-                        <span>Delivery Charge</span>
+<span>Total</span>
 
-                        <span class="green-text delivery-price">
-                            FREE
-                        </span>
+<span id="totalAmount"></span>
 
-                    </div>
+</div>
 
+<button id="continuePayment">
 
+Continue
 
-                    <hr>
+</button>
 
+</div>
 
+</div>
 
-                    <div class="payment-row total-payment">
+</div>
 
-                        <span>Total Amount</span>
+<!-- ================= PAYMENT PAGE ================= -->
 
-                        <span id="paymentTotal"></span>
+<div class="payment-page" id="paymentPage">
 
-                    </div>
+<div class="payment-container">
 
+<!-- LEFT -->
 
+<div class="payment-left">
 
-                    <button id="placeFinalOrder">
+<h1>
 
-                        Place Order
+Cash On Delivery
 
-                    </button>
+</h1>
 
-                </div>
+<div class="cod-box">
 
-            </div>
+<h2>
 
-        </div>
+🚚 Pay Cash On Delivery
 
-    </div>
-    <script src="script.js"></script>
+</h2>
+
+<p>
+
+Pay when your order arrives.
+
+</p>
+
+</div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div class="payment-right">
+
+<div class="payment-price-box">
+
+<h2>
+
+Price Details
+
+</h2>
+
+<hr>
+
+<div class="payment-row">
+
+<span>
+
+Product Price
+
+</span>
+
+<span id="paymentPrice">
+
+</span>
+
+</div>
+
+<div class="payment-row">
+
+<span>
+
+Discount (20%)
+
+</span>
+
+<span
+class="green-text"
+id="discountPrice">
+
+-₹0
+
+</span>
+
+</div>
+
+<div class="payment-row">
+
+<span>
+
+Delivery Charge
+
+</span>
+
+<span class="green-text">
+
+FREE
+
+</span>
+
+</div>
+
+<hr>
+
+<div class="payment-row total-payment">
+
+<span>
+
+Total Amount
+
+</span>
+
+<span id="paymentTotal">
+
+</span>
+
+</div>
+
+<button id="placeFinalOrder">
+
+Place Order
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
+
+<script src="script.js"></script>
+
 </body>
 
 </html>

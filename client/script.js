@@ -12,6 +12,8 @@ let currentProduct = null;
 
 // ================= ELEMENTS =================
 
+const homePage = document.getElementById("homePage");
+
 const productsContainer = document.querySelector(".products-container");
 
 const cartCount = document.getElementById("cartCount");
@@ -143,12 +145,26 @@ Buy Now
     const addBtn = productCard.querySelector(".add-cart-btn");
 
     addBtn.addEventListener("click", () => {
-      cart.push(product);
 
-      cartCount.innerHTML = cart.length;
+  // LOGIN CHECK
+  const user = JSON.parse(localStorage.getItem("user"));
 
-      renderCart();
-    });
+  if (!user) {
+    alert("Please login first");
+    window.location.href = "login.html";
+    return;
+  }
+
+  cart.push(product);
+
+  // Ye line bahut important hai
+  currentProduct = product;
+
+  cartCount.innerHTML = cart.length;
+
+  renderCart();
+
+});
 
     // BUY NOW
     const buyBtn = productCard.querySelector(".buy-now-btn");
@@ -168,7 +184,9 @@ Buy Now
 
       currentProduct = product;
 
-      variantModal.style.display = "flex";
+      homePage.style.display="none";
+
+      variantModal.style.display="flex";
 
       variantImage.src = product.image;
 
@@ -242,6 +260,29 @@ closeCart.addEventListener("click", () => {
   cartSidebar.classList.remove("active");
 });
 
+// ================= CART PLACE ORDER =================
+
+const checkoutBtn = document.getElementById("checkoutBtn");
+
+checkoutBtn.addEventListener("click", () => {
+
+  if (cart.length === 0) {
+    alert("Cart is empty");
+    return;
+  }
+
+  cartSidebar.classList.remove("active");
+
+  homePage.style.display = "none";
+
+  variantModal.style.display = "flex";
+
+  variantImage.src = currentProduct.image;
+  variantTitle.innerHTML = currentProduct.name;
+  variantPrice.innerHTML = `₹${currentProduct.price}`;
+
+});
+
 // ================= SEARCH =================
 
 searchBtn.addEventListener("click", () => {
@@ -272,9 +313,9 @@ categoryButtons.forEach((button) => {
       return;
     }
 
-    let filteredProducts = products.filter((product) => {
-      return product.category === category;
-    });
+   let filteredProducts = products.filter((product) => {
+    return product.category.trim().toLowerCase() === category.trim().toLowerCase();
+});
 
     showProducts(filteredProducts);
   });
@@ -475,13 +516,15 @@ placeFinalOrder.addEventListener("click", async () => {
     // SAVE FIRST ORDER
     localStorage.setItem("firstOrder", "done");
 
-    // CLOSE PAYMENT PAGE
-    paymentPage.style.display = "none";
-  } catch (error) {
-    console.log(error);
-  }
+ // CLOSE PAYMENT PAGE
+paymentPage.style.display = "none";
 
-  paymentPage.style.display = "none";
+// HOME PAGE WAPAS DIKHAO
+homePage.style.display = "block";
+
+} catch (error) {
+  console.log(error);
+}
 });
 
 // FETCH PRODUCTS
