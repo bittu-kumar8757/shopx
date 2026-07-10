@@ -633,6 +633,7 @@ app.put("/orders/:id", async (req, res) => {
 =========================== */
 
 app.post("/products", upload.single("image"), async (req, res) => {
+    console.log("===== POST /products HIT =====");
   try {
     if (!req.file) {
       return res.status(400).json({
