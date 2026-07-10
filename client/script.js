@@ -100,6 +100,7 @@ function showProducts(products) {
   productsContainer.innerHTML = "";
 
   products.forEach((product) => {
+    console.log(product.image);
     const productCard = document.createElement("div");
 
     productCard.classList.add("product-card");
@@ -437,15 +438,18 @@ continueAddress.addEventListener("click", () => {
 // ================= PAYMENT PAGE =================
 
 continuePayment.addEventListener("click", () => {
+
   summaryPage.style.display = "none";
 
   paymentPage.style.display = "block";
 
-  let discount = currentProduct.price * 0.2;
+  const price = Number(currentProduct.price);
+
+  const discount = +(price * 0.20).toFixed(2);
 
   let deliveryCharge = 49;
 
-  let firstOrder = localStorage.getItem("firstOrder");
+  const firstOrder = localStorage.getItem("firstOrder");
 
   // FIRST ORDER FREE
   if (firstOrder !== "done") {
@@ -453,13 +457,13 @@ continuePayment.addEventListener("click", () => {
   }
 
   // ABOVE 999 FREE
-  if (currentProduct.price > 999) {
+  if (price > 999) {
     deliveryCharge = 0;
   }
 
-  let finalAmount = currentProduct.price - discount + deliveryCharge;
+  const finalAmount = +(price - discount + deliveryCharge).toFixed(2);
 
-  paymentPrice.innerHTML = `₹${currentProduct.price}`;
+  paymentPrice.innerHTML = `₹${price}`;
 
   discountPrice.innerHTML = `-₹${discount}`;
 
@@ -467,6 +471,7 @@ continuePayment.addEventListener("click", () => {
     deliveryCharge === 0 ? "FREE" : `₹${deliveryCharge}`;
 
   paymentTotal.innerHTML = `₹${finalAmount}`;
+
 });
 
 // ================= FINAL ORDER =================
@@ -529,70 +534,77 @@ homePage.style.display = "block";
 
 // FETCH PRODUCTS
 
+// async function fetchProducts() {
+//   try {
+//     const response = await fetch("https://shopx-backends.onrender.com/products");
+//     const data = await response.json();
+
+//     products = data;
+
+//     showProducts(products);
+    
+//   // BUY FROM DETAILS PAGE
+
+// const urlParams =
+// new URLSearchParams(
+
+// window.location.search
+
+// );
+
+
 async function fetchProducts() {
+
   try {
+
     const response = await fetch("https://shopx-backends.onrender.com/products");
+
+    console.log("Response:", response);
+
     const data = await response.json();
+
+    console.log("Products:", data);
 
     products = data;
 
     showProducts(products);
-    
-  // BUY FROM DETAILS PAGE
 
-const urlParams =
-new URLSearchParams(
+    // BUY FROM DETAILS PAGE
 
-window.location.search
+    const urlParams = new URLSearchParams(window.location.search);
 
-);
+    const buyId = urlParams.get("buy");
 
+    if (buyId) {
 
+      const product = products.find(item => item._id === buyId);
 
-const buyId =
-urlParams.get("buy");
-
-
-
-if(buyId){
-
-    const product =
-    products.find((item) => {
-
-        return item._id === buyId;
-
-    });
-
-
-
-    if(product){
+      if (product) {
 
         currentProduct = product;
 
-        variantModal.style.display =
-        "flex";
+        variantModal.style.display = "flex";
 
+        variantImage.src = product.image;
 
+        variantTitle.innerHTML = product.name;
 
-        variantImage.src =
-        product.image;
+        variantPrice.innerHTML = `₹${product.price}`;
 
+      }
 
-
-        variantTitle.innerHTML =
-        product.name;
-
-
-
-        variantPrice.innerHTML =
-        `₹${product.price}`;
     }
 
-}
-  } catch (error) {
-    console.log(error);
   }
+
+  catch (error) {
+
+    console.log("Fetch Error:", error);
+
+  }
+
 }
+
 
 // ================= INITIAL PRODUCTS =================
 
