@@ -2426,39 +2426,64 @@ textarea {
     width: 100%;
   }
 
-  /* 3. Existing Grids & Layouts */
+  /* 3. Force 2 Products Per Row on Mobile */
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 0 8px;
   }
+
+  .product-card {
+    padding: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .product-title {
+    font-size: 0.85rem !important;
+  }
+
+  .product-price {
+    font-size: 0.9rem !important;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
+
   .section {
     padding: 40px 16px;
   }
+
   .shop-layout {
     flex-direction: column;
     padding: 20px 16px;
   }
+
   .shop-sidebar {
     width: 100%;
   }
+
   .checkout-wrap {
     padding: 24px 16px 80px;
   }
+
   .form-row {
     grid-template-columns: 1fr;
   }
+
   .footer-inner {
     grid-template-columns: 1fr;
     gap: 24px;
   }
 }
 
-/* Extra Small Phones (under 400px) */
+/* Extra small screen par bhi 2 items per row rahenge */
 @media (max-width: 400px) {
   .products-grid {
-    grid-template-columns: 1fr;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
   }
 }
