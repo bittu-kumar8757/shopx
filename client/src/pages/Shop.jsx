@@ -73,12 +73,7 @@ export default function Shop() {
                   {l}
                 </label>
               ))}
-              {group === 'sort' && [['default','Featured'],['price-asc','Price: Low to High'],['price-desc','Price: High to Low'],['rating','Top Rated']].map(([v, l]) => (
-                <label key={v} className="filter-option">
-                  <input type="radio" name="sort" value={v} checked={filters.sort === v} onChange={() => handleFilter('sort', v)} />
-                  {l}
-                </label>
-              ))}
+              
             </div>
           ))}
         </aside>
