@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 // ── Middleware ────────────────────────────────────────────────
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: '*', // Live deployment me sabhi origins allow kar diye hain
   credentials: true,
 }));
 app.use(express.json());
@@ -35,7 +35,5 @@ app.get('/api/health', (req, res) => {
 
 // ── Start Server ──────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`✅ ShopX Server running at http://localhost:${PORT}`);
-  console.log(`📦 Products API: http://localhost:${PORT}/api/products`);
-  console.log(`📋 Orders  API: http://localhost:${PORT}/api/orders`);
+  console.log(`✅ ShopX Server running on port ${PORT}`);
 });
