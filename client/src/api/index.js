@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://shopx-29b1.onrender.com/api',
 });
 
 // Auto-attach admin token to requests
@@ -29,15 +29,13 @@ export const adminLogin = (credentials) => API.post('/auth/login', credentials);
 
 // ── Image URL helper ─────────────────────────────────────────
 export const getImageUrl = (imagePath) => {
-  if (!imagePath) return 'http://localhost:5000/images/product_tshirt.jpg';
+  if (!imagePath) return 'https://shopx-29b1.onrender.com/images/product_tshirt.jpg';
 
-  // Agar direct internet link (http:// ya https://) daala hai:
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
     return imagePath;
   }
 
-  // Agar local image filename daala hai:
-  return `http://localhost:5000/images/${imagePath}`;
+  return `https://shopx-29b1.onrender.com/images/${imagePath}`;
 };
 
 export default API;
