@@ -1,0 +1,457 @@
+[
+  {
+    "id": 1,
+    "name": "Oversized Signature Tee",
+    "category": "men",
+    "categoryLabel": "Men's Tops",
+    "price": 1299,
+    "originalPrice": 1799,
+    "image": "product_tshirt.jpg",
+    "images": [
+      "product_tshirt.jpg",
+      "product_hoodie.jpg",
+      "product_sweater.jpg",
+      "product_jacket.jpg"
+    ],
+    "rating": 4.8,
+    "reviews": 256,
+    "tag": "new",
+    "tagLabel": "New",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#f0f0e8",
+      "#1a1a1a",
+      "#2d4a3e",
+      "#8b5e3c"
+    ],
+    "description": "Crafted from 100% premium Pima cotton, this oversized tee drapes perfectly for that effortless elevated look. Boxy silhouette with dropped shoulders, ribbed collar, and a subtle garment-washed finish.",
+    "material": "100% Pima Cotton",
+    "care": "Machine wash cold, tumble dry low",
+    "fit": "Oversized / Boxy",
+    "featured": true
+  },
+  {
+    "id": 2,
+    "name": "Urban Stealth Hoodie",
+    "category": "unisex",
+    "categoryLabel": "Unisex",
+    "price": 599,
+    "originalPrice": 3999,
+    "image": "product_hoodie.jpg",
+    "images": [
+      "product_hoodie.jpg",
+      "product_jacket.jpg",
+      "product_tshirt.jpg",
+      "product_sweater.jpg"
+    ],
+    "rating": 4.9,
+    "reviews": 418,
+    "tag": "hot",
+    "tagLabel": "Hot",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "outOfStock": [
+      "XS"
+    ],
+    "colors": [
+      "#1a1a1a",
+      "#2c2c3e",
+      "#3d2929",
+      "#1a2e1a"
+    ],
+    "description": "Double-faced fleece interior for cloud-like warmth, kangaroo pocket, and an adjustable drawstring hood. Cut slightly relaxed through the body with a clean hemline.",
+    "material": "80% Cotton, 20% Polyester",
+    "care": "Machine wash cold, lay flat to dry",
+    "fit": "Relaxed / Regular",
+    "featured": true
+  },
+  {
+    "id": 3,
+    "name": "Classic Denim Jacket",
+    "category": "men",
+    "categoryLabel": "Men's Outerwear",
+    "price": 3499,
+    "originalPrice": 4999,
+    "image": "product_jacket.jpg",
+    "images": [
+      "product_jacket.jpg",
+      "product_tshirt.jpg",
+      "product_hoodie.jpg",
+      "product_sweater.jpg"
+    ],
+    "rating": 4.7,
+    "reviews": 189,
+    "tag": "sale",
+    "tagLabel": "Sale",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "outOfStock": [
+      "XXL"
+    ],
+    "colors": [
+      "#3d5a7a",
+      "#1a1a1a",
+      "#5a4a2a",
+      "#2a3a2a"
+    ],
+    "description": "A timeless silhouette reimagined. Japanese selvedge denim jacket with structured collar, brass button closures, and two chest pockets.",
+    "material": "100% Japanese Selvedge Denim",
+    "care": "Spot clean or dry clean recommended",
+    "fit": "Slim / Regular",
+    "featured": true
+  },
+  {
+    "id": 4,
+    "name": "Luxe Turtleneck Knit",
+    "category": "women",
+    "categoryLabel": "Women's Tops",
+    "price": 2199,
+    "originalPrice": 2999,
+    "image": "product_sweater.jpg",
+    "images": [
+      "product_sweater.jpg",
+      "product_hoodie.jpg",
+      "product_jacket.jpg",
+      "product_tshirt.jpg"
+    ],
+    "rating": 4.8,
+    "reviews": 312,
+    "tag": "new",
+    "tagLabel": "New",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#e8dfc8",
+      "#c9b89a",
+      "#1a1a1a",
+      "#8b7355"
+    ],
+    "description": "Fine-gauge merino wool turtleneck with unparalleled softness and temperature regulation. The ribbed turtleneck can be worn up for warmth or folded over.",
+    "material": "100% Fine Merino Wool",
+    "care": "Hand wash cold or dry clean",
+    "fit": "Semi-fitted / Regular",
+    "featured": true
+  },
+  {
+    "id": 5,
+    "name": "Tapered Jogger Pants",
+    "category": "unisex",
+    "categoryLabel": "Unisex Bottoms",
+    "price": 1899,
+    "originalPrice": 2499,
+    "image": "product_joggers.jpg",
+    "images": [
+      "product_joggers.jpg",
+      "product_hoodie.jpg",
+      "product_tshirt.jpg",
+      "product_jacket.jpg"
+    ],
+    "rating": 4.6,
+    "reviews": 227,
+    "tag": null,
+    "tagLabel": null,
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#3a3a3a",
+      "#1a1a2e",
+      "#2a3a2a",
+      "#3a2a2a"
+    ],
+    "description": "Comfortable elasticated waistband with drawstring, zip pockets, and a tapered leg that works as well in the gym as at a café.",
+    "material": "78% Cotton, 22% Modal",
+    "care": "Machine wash warm, tumble dry medium",
+    "fit": "Tapered / Regular",
+    "featured": false
+  },
+  {
+    "id": 6,
+    "name": "Forest Green Polo",
+    "category": "men",
+    "categoryLabel": "Men's Tops",
+    "price": 1599,
+    "originalPrice": 2199,
+    "image": "product_tshirt.jpg",
+    "images": [
+      "product_tshirt.jpg",
+      "product_sweater.jpg",
+      "product_joggers.jpg",
+      "product_hoodie.jpg"
+    ],
+    "rating": 4.5,
+    "reviews": 143,
+    "tag": "sale",
+    "tagLabel": "Sale",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "outOfStock": [
+      "S"
+    ],
+    "colors": [
+      "#2d4a2a",
+      "#1a1a1a",
+      "#2a2a4a",
+      "#4a2a2a"
+    ],
+    "description": "Sophisticated micro-piqué cotton polo with three-button placket, ribbed collar, and short sleeves. Perfect for smart-casual occasions.",
+    "material": "100% Piqué Cotton",
+    "care": "Machine wash cold, do not bleach",
+    "fit": "Regular / Classic",
+    "featured": false
+  },
+  {
+    "id": 7,
+    "name": "Minimalist Slip Dress",
+    "category": "women",
+    "categoryLabel": "Women's Dresses",
+    "price": 2599,
+    "originalPrice": 3499,
+    "image": "product_sweater.jpg",
+    "images": [
+      "product_sweater.jpg",
+      "product_joggers.jpg",
+      "product_jacket.jpg",
+      "product_hoodie.jpg"
+    ],
+    "rating": 4.9,
+    "reviews": 389,
+    "tag": "hot",
+    "tagLabel": "Hot",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "outOfStock": [
+      "XS",
+      "XL"
+    ],
+    "colors": [
+      "#1a1a1a",
+      "#e8dfc8",
+      "#9a8a7a",
+      "#3d2929"
+    ],
+    "description": "Fluid TENCEL™ midi-length slip dress with adjustable spaghetti straps, subtle cowl neckline, and a silhouette that drapes beautifully in motion.",
+    "material": "100% Lyocell (TENCEL™)",
+    "care": "Hand wash cold, lay flat to dry",
+    "fit": "Relaxed / Flow",
+    "featured": false
+  },
+  {
+    "id": 8,
+    "name": "Structured Camel Blazer",
+    "category": "unisex",
+    "categoryLabel": "Unisex Outerwear",
+    "price": 4299,
+    "originalPrice": 5999,
+    "image": "product_jacket.jpg",
+    "images": [
+      "product_jacket.jpg",
+      "product_sweater.jpg",
+      "product_tshirt.jpg",
+      "product_hoodie.jpg"
+    ],
+    "rating": 4.7,
+    "reviews": 201,
+    "tag": "new",
+    "tagLabel": "New",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "outOfStock": [
+      "XS"
+    ],
+    "colors": [
+      "#c8a86c",
+      "#1a1a1a",
+      "#5a4a3a",
+      "#2d4a3e"
+    ],
+    "description": "Power piece with structured shoulder, notch lapel, two-button closure, and flap pockets. Lined interior for refined drape and all-day comfort.",
+    "material": "60% Wool, 40% Viscose",
+    "care": "Dry clean only",
+    "fit": "Oversized / Structured",
+    "featured": false
+  },
+  {
+    "id": 9,
+    "name": "T-shirt",
+    "category": "men",
+    "categoryLabel": "Men's Collection",
+    "price": 299,
+    "originalPrice": 399,
+    "image": "1733493099277",
+    "images": [
+      "1733493099277"
+    ],
+    "rating": 4.5,
+    "reviews": 0,
+    "tag": "new",
+    "tagLabel": "New",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#f0f0e8",
+      "#1a1a1a",
+      "#2d4a3e",
+      "#8b5e3c"
+    ],
+    "description": "This is a best product",
+    "material": "cotton",
+    "fit": "",
+    "care": "Machine wash cold",
+    "featured": false
+  },
+  {
+    "id": 10,
+    "name": "Round   Neck   Plain   T-Shirts",
+    "category": "men",
+    "categoryLabel": "Men's Collection",
+    "price": 349,
+    "originalPrice": 589,
+    "image": "https://triprindia.com/cdn/shop/files/TMRRN-PLAIND1641.jpg?v=1776332784",
+    "images": [
+      "https://triprindia.com/cdn/shop/files/TMRRN-PLAIND1641.jpg?v=1776332784"
+    ],
+    "rating": 4.5,
+    "reviews": 0,
+    "tag": null,
+    "tagLabel": null,
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#f0f0e8",
+      "#1a1a1a",
+      "#2d4a3e",
+      "#8b5e3c"
+    ],
+    "description": "This is a best product\n",
+    "material": "",
+    "fit": "",
+    "care": "Machine wash cold",
+    "featured": false
+  },
+  {
+    "id": 11,
+    "name": "Women's Georgette Dresses Floral Printed One Piece Stylish Long Maxi Western Frock Midi Dress for Women (in, Alpha, L, Regular, Navy Blue)",
+    "category": "women",
+    "categoryLabel": "Women's Collection",
+    "price": 649,
+    "originalPrice": 1999,
+    "image": "https://m.media-amazon.com/images/I/51wLooyWpKL.jpg",
+    "images": [
+      "https://m.media-amazon.com/images/I/51wLooyWpKL.jpg"
+    ],
+    "rating": 4.9,
+    "reviews": 0,
+    "tag": null,
+    "tagLabel": null,
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#f0f0e8",
+      "#1a1a1a",
+      "#2d4a3e",
+      "#8b5e3c"
+    ],
+    "description": "Our aim is to provide you with fashionable clothing that is comfortable, affordable, and durable. We work with trust to ensure that we source only the best materials for our clothing, and our team of experienced designers and stylists is constantly updating our collection to reflect the latest trends. You'll find it all here at our online clothing store.",
+    "material": "Georgette",
+    "fit": "Daily",
+    "care": "Machine wash cold",
+    "featured": false
+  },
+  {
+    "id": 12,
+    "name": "Dress Mid-Length Maxi Dress for Woman ||Stylish Frocks for Women ||One Piece Dress for Women || Long Midi Dress for Woman || Party & Beach Wear",
+    "category": "women",
+    "categoryLabel": "Women's Collection",
+    "price": 568,
+    "originalPrice": null,
+    "image": "https://m.media-amazon.com/images/I/51du4Pb1bFL._SY879_.jpg",
+    "images": [
+      "https://m.media-amazon.com/images/I/51du4Pb1bFL._SY879_.jpg"
+    ],
+    "rating": 4.5,
+    "reviews": 0,
+    "tag": null,
+    "tagLabel": null,
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "outOfStock": [],
+    "colors": [
+      "#f0f0e8",
+      "#1a1a1a",
+      "#2d4a3e",
+      "#8b5e3c"
+    ],
+    "description": "SMOWKLY Cotton Blend Women's Casual Solid Printed Dress Mid-Length Maxi Dress",
+    "material": "Cotton Blend",
+    "fit": "Fit And Flare",
+    "care": "Machine wash cold",
+    "featured": false
+  }
+]

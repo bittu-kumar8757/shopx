@@ -1,0 +1,98 @@
+[
+  {
+    "id": "#SX79856",
+    "customer": "Bittu Kumar",
+    "email": "bittukumar865758@gmail.com",
+    "phone": "+918969382085",
+    "address": "US Emporium",
+    "city": "Muzaffarpur",
+    "pincode": "843103",
+    "payment": "cod",
+    "items": [
+      {
+        "id": 2,
+        "size": "S",
+        "qty": 1,
+        "colorIndex": 0
+      }
+    ],
+    "subtotal": 2799,
+    "discount": 0,
+    "shipping": 0,
+    "total": 2799,
+    "date": "2026-10-30T18:19:03.873Z",
+    "status": "pending"
+  },
+  {
+    "id": "#SX79996",
+    "customer": "Bittu Kumar",
+    "email": "bittukumar865758@gmail.com",
+    "phone": "+918757109220",
+    "address": "vill,post-Unsar, p/s-bochaha, Dis-Muzaffarpur",
+    "city": "MUZAFFARPUR",
+    "pincode": "843103",
+    "payment": "cod",
+    "items": [
+      {
+        "id": 4,
+        "size": "M",
+        "qty": 1,
+        "colorIndex": 0
+      }
+    ],
+    "subtotal": 2199,
+    "discount": 0,
+    "shipping": 0,
+    "total": 2199,
+    "date": "2026-10-30T18:25:58.037Z",
+    "status": "pending"
+  },
+  {
+    "id": "#SX45337",
+    "customer": "Bittu Kumar",
+    "email": "bittukumar865758@gmail.com",
+    "phone": "+918969382085",
+    "address": "US Emporium",
+    "city": "Muzaffarpur",
+    "pincode": "843103",
+    "payment": "card",
+    "items": [
+      {
+        "id": 8,
+        "size": "S",
+        "qty": 8,
+        "colorIndex": 0
+      }
+    ],
+    "subtotal": 34392,
+    "discount": 0,
+    "shipping": 0,
+    "total": 34392,
+    "date": "2026-10-30T18:41:00.453Z",
+    "status": "pending"
+  },
+  {
+    "id": "#SX42204",
+    "customer": "Bittu Kumar",
+    "email": "bittukumar865758@gmail.com",
+    "phone": "+918969382085",
+    "address": "US Emporium",
+    "city": "Muzaffarpur",
+    "pincode": "843103",
+    "payment": "cod",
+    "items": [
+      {
+        "id": 2,
+        "size": "M",
+        "qty": 2,
+        "colorIndex": 0
+      }
+    ],
+    "subtotal": 1198,
+    "discount": 0,
+    "shipping": 0,
+    "total": 1198,
+    "date": "2026-10-30T18:55:01.159Z",
+    "status": "pending"
+  }
+]
