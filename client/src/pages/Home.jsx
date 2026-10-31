@@ -70,16 +70,24 @@ export default function Home() {
       <section className="section featured-section">
         <div className="section-header">
           <div><h2 className="section-title">Trending Now</h2></div>
-          <Link to="/shop" className="view-all-btn">View All →</Link>
         </div>
         {loading ? (
           <div className="loading-grid">
             {[1,2,3,4].map(i => <div key={i} className="skeleton-card"></div>)}
           </div>
         ) : (
-          <div className="products-grid">
-            {featured.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
+          <>
+            <div className="products-grid">
+              {featured.map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+            
+            {/* Direct inline layout for center button using existing btn class */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '32px' }}>
+              <Link to="/shop" className="btn btn-primary">
+                View All Products →
+              </Link>
+            </div>
+          </>
         )}
       </section>
 

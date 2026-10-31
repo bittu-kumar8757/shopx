@@ -32,6 +32,7 @@ export const getProductById = (req, res) => {
 };
 
 // POST /api/products  (Admin only)
+// POST /api/products  (Admin only)
 export const createProduct = (req, res) => {
   try {
     const products = readProducts();
@@ -55,7 +56,9 @@ export const createProduct = (req, res) => {
       sizes: sizes || ['S', 'M', 'L', 'XL'],
       outOfStock: outOfStock || [],
       colors: ['#f0f0e8', '#1a1a1a', '#2d4a3e', '#8b5e3c'],
-      description, material, fit,
+      description: description || '', // 👈 Description optional kar diya hai (empty string allowed)
+      material: material || '',
+      fit: fit || '',
       care: care || 'Machine wash cold',
       featured: featured || false,
     };
