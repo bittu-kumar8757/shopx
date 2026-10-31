@@ -12,7 +12,8 @@ function getStars(r) {
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  // 👈 Here: Destructure buyNow along with addToCart
+  const { addToCart, buyNow } = useCart();
   const { showToast } = useToast();
 
   const [product, setProduct] = useState(null);
@@ -23,10 +24,8 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    // Page load hone par sabse upar scroll karein
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // States ko purane product se reset karein
     setLoading(true);
     setActiveImg(0);
     setSelectedSize(null);
@@ -55,9 +54,10 @@ export default function ProductDetail() {
     showToast(`${product.name} added to cart!`);
   };
 
+  // 👈 FIXED: Use buyNow instead of addToCart to clear old cart items on Direct Purchase
   const handleBuyNow = () => {
     if (!selectedSize) { showToast('Please select a size!', 'error'); return; }
-    addToCart(product, selectedSize, selectedColor, qty);
+    buyNow(product, selectedSize, selectedColor, qty);
     navigate('/checkout');
   };
 

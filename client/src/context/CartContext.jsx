@@ -27,6 +27,11 @@ const cartReducer = (state, action) => {
     }
     case 'CLEAR_CART':
       return [];
+    case 'BUY_NOW': {
+      const { product, size, colorIndex, qty } = action.payload;
+      // 👈 Purana cart replace karke sirf NAYA SINGLE ITEM set hoga
+      return [{ id: product.id, product, size, colorIndex, qty }];
+    }
     case 'LOAD_CART':
       return action.payload;
     default:
@@ -53,6 +58,10 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product, size, colorIndex = 0, qty = 1) =>
     dispatch({ type: 'ADD_ITEM', payload: { product, size, colorIndex, qty } });
 
+  // 👈 Buy Now Handler Add Kar Diya Hai
+  const buyNow = (product, size, colorIndex = 0, qty = 1) =>
+    dispatch({ type: 'BUY_NOW', payload: { product, size, colorIndex, qty } });
+
   const removeFromCart = (id, size, colorIndex) =>
     dispatch({ type: 'REMOVE_ITEM', payload: { id, size, colorIndex } });
 
@@ -62,7 +71,7 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => dispatch({ type: 'CLEAR_CART' });
 
   return (
-    <CartContext.Provider value={{ cart, totalItems, totalPrice, addToCart, removeFromCart, updateQty, clearCart }}>
+    <CartContext.Provider value={{ cart, totalItems, totalPrice, addToCart, buyNow, removeFromCart, updateQty, clearCart }}>
       {children}
     </CartContext.Provider>
   );
