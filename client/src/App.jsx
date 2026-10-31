@@ -14,6 +14,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
 import Products from './pages/admin/Products';
 import Orders from './pages/admin/Orders';
+import MyOrders from './pages/MyOrders';
 
 function ProtectedRoute({ children }) {
   const { isAdmin, loading } = useAuth();
@@ -44,6 +45,9 @@ export default function App() {
               <Route path="/cart" element={<StoreLayout><Cart /></StoreLayout>} />
               <Route path="/checkout" element={<StoreLayout><Checkout /></StoreLayout>} />
               <Route path="/success" element={<StoreLayout><OrderSuccess /></StoreLayout>} />
+              
+              {/* 👈 Wrap with StoreLayout to show Navbar */}
+              <Route path="/my-orders" element={<StoreLayout><MyOrders /></StoreLayout>} />
 
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminLogin />} />
