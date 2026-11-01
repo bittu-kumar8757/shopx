@@ -16,7 +16,7 @@ export default function Checkout() {
 
   // Aapka Scanned PhonePe QR Image & Exact UPI ID Details
   const upiId = '8757109220-2@ybl'; 
-  const upiQrUrl = getImageUrl('qr_code.jpeg'); // client/public/images/qr_code.jpeg ya client/public/qr_code.jpeg
+  const upiQrUrl = getImageUrl('qr_code.jpeg'); 
 
   const [form, setForm] = useState({
     firstName: '',
@@ -114,53 +114,78 @@ export default function Checkout() {
   };
 
   return (
-    <div className="page active" style={{ paddingTop: 'var(--nav-h, 100px)', paddingBottom: '80px' }}>
-      <div className="checkout-wrap" style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 16px' }}>
-        <h1 className="checkout-title" style={{ color: '#fff', fontSize: '1.8rem', marginBottom: '24px' }}>Checkout</h1>
+    <div className="checkout-page-container">
+      <div className="checkout-wrap">
+        <h1 className="checkout-title">Checkout</h1>
         <form onSubmit={handleSubmit}>
-          <div className="checkout-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
+          <div className="checkout-layout">
             
             {/* Shipping & Address Section */}
             <div>
-              <div className="checkout-section" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '24px' }}>
-                <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
-                  📍 Delivery Address
-                </h2>
+              <div className="checkout-section">
+                <h2 className="cs-title">📍 Delivery Address</h2>
 
                 {/* Name & Phone */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>First Name *</label><input required value={form.firstName} onChange={e => setForm(f => ({...f, firstName: e.target.value}))} placeholder="Rahul" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Last Name</label><input value={form.lastName} onChange={e => setForm(f => ({...f, lastName: e.target.value}))} placeholder="Sharma" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label>First Name *</label>
+                    <input required value={form.firstName} onChange={e => setForm(f => ({...f, firstName: e.target.value}))} placeholder="Rahul" />
+                  </div>
+                  <div className="form-group">
+                    <label>Last Name</label>
+                    <input value={form.lastName} onChange={e => setForm(f => ({...f, lastName: e.target.value}))} placeholder="Sharma" />
+                  </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Phone Number *</label><input type="tel" required value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} placeholder="10-digit mobile number" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Alternate Phone (Optional)</label><input type="tel" value={form.alternatePhone} onChange={e => setForm(f => ({...f, alternatePhone: e.target.value}))} placeholder="Alternate number" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" required value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} placeholder="10-digit mobile number" />
+                  </div>
+                  <div className="form-group">
+                    <label>Alternate Phone (Optional)</label>
+                    <input type="tel" value={form.alternatePhone} onChange={e => setForm(f => ({...f, alternatePhone: e.target.value}))} placeholder="Alternate number" />
+                  </div>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: '16px' }}>
-                  <label style={{ color: '#aaa', fontSize: '0.85rem' }}>Email Address *</label>
-                  <input type="email" required value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder="rahul@example.com" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} />
+                <div className="form-group single-group">
+                  <label>Email Address *</label>
+                  <input type="email" required value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder="rahul@example.com" />
                 </div>
 
-                {/* Flat / House No & Street */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Flat, House No., Building *</label><input required value={form.houseNo} onChange={e => setForm(f => ({...f, houseNo: e.target.value}))} placeholder="Flat No. 402, Shivam Apts" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Area, Street, Sector, Village *</label><input required value={form.street} onChange={e => setForm(f => ({...f, street: e.target.value}))} placeholder="MG Road, Sector 4" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                {/* House No & Street */}
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label>Flat, House No., Building *</label>
+                    <input required value={form.houseNo} onChange={e => setForm(f => ({...f, houseNo: e.target.value}))} placeholder="Flat No. 402, Shivam Apts" />
+                  </div>
+                  <div className="form-group">
+                    <label>Area, Street, Sector, Village *</label>
+                    <input required value={form.street} onChange={e => setForm(f => ({...f, street: e.target.value}))} placeholder="MG Road, Sector 4" />
+                  </div>
                 </div>
 
                 {/* Landmark & Pincode */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Landmark (Optional)</label><input value={form.landmark} onChange={e => setForm(f => ({...f, landmark: e.target.value}))} placeholder="Near City Bank / Temple" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>6-Digit PIN Code *</label><input required maxLength={6} value={form.pincode} onChange={e => setForm(f => ({...f, pincode: e.target.value}))} placeholder="843103" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                <div className="form-grid-2">
+                  <div className="form-group">
+                    <label>Landmark (Optional)</label>
+                    <input value={form.landmark} onChange={e => setForm(f => ({...f, landmark: e.target.value}))} placeholder="Near City Bank / Temple" />
+                  </div>
+                  <div className="form-group">
+                    <label>6-Digit PIN Code *</label>
+                    <input required maxLength={6} value={form.pincode} onChange={e => setForm(f => ({...f, pincode: e.target.value}))} placeholder="843103" />
+                  </div>
                 </div>
 
                 {/* City & State */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Town / City *</label><input required value={form.city} onChange={e => setForm(f => ({...f, city: e.target.value}))} placeholder="Muzaffarpur" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                <div className="form-grid-2">
                   <div className="form-group">
-                    <label style={{ color: '#aaa', fontSize: '0.85rem' }}>State *</label>
-                    <select value={form.state} onChange={e => setForm(f => ({...f, state: e.target.value}))} style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }}>
+                    <label>Town / City *</label>
+                    <input required value={form.city} onChange={e => setForm(f => ({...f, city: e.target.value}))} placeholder="Muzaffarpur" />
+                  </div>
+                  <div className="form-group">
+                    <label>State *</label>
+                    <select value={form.state} onChange={e => setForm(f => ({...f, state: e.target.value}))}>
                       <option value="Bihar">Bihar</option>
                       <option value="Delhi">Delhi</option>
                       <option value="Maharashtra">Maharashtra</option>
@@ -176,63 +201,43 @@ export default function Checkout() {
               </div>
 
               {/* Payment Section */}
-              <div className="checkout-section" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 16px' }}>Payment Mode</h2>
-                <div className="payment-methods" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div className="checkout-section">
+                <h2 className="cs-title">Payment Mode</h2>
+                <div className="payment-methods">
                   
-                  {/* COD Option */}
-                  <label style={{
-                    padding: '14px 16px', borderRadius: '10px', background: payment === 'cod' ? 'rgba(226, 185, 99, 0.12)' : '#111',
-                    border: `1px solid ${payment === 'cod' ? 'var(--gold, #e2b963)' : '#333'}`, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
-                  }}>
+                  {/* COD */}
+                  <label className={`payment-option ${payment === 'cod' ? 'active' : ''}`}>
                     <input type="radio" name="payment" value="cod" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
                     💵 Cash on Delivery (COD)
                   </label>
 
-                  {/* UPI Option */}
-                  <label style={{
-                    padding: '14px 16px', borderRadius: '10px', background: payment === 'upi' ? 'rgba(226, 185, 99, 0.12)' : '#111',
-                    border: `1px solid ${payment === 'upi' ? 'var(--gold, #e2b963)' : '#333'}`, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
-                  }}>
+                  {/* UPI */}
+                  <label className={`payment-option ${payment === 'upi' ? 'active' : ''}`}>
                     <input type="radio" name="payment" value="upi" checked={payment === 'upi'} onChange={() => setPayment('upi')} />
                     📱 UPI / PhonePe / GPay / Paytm
                   </label>
 
                 </div>
 
-                {/* 👈 Dynamic PhonePe Scanner Box when UPI is selected */}
+                {/* UPI Scanner Display */}
                 {payment === 'upi' && (
-                  <div style={{
-                    marginTop: '16px', padding: '20px', borderRadius: '12px', background: '#111',
-                    border: '1px dashed var(--gold, #e2b963)', textAlign: 'center', color: '#fff'
-                  }}>
-                    <h4 style={{ margin: '0 0 8px', color: 'var(--gold, #e2b963)' }}>Scan PhonePe QR Code to Pay ₹{total.toLocaleString('en-IN')}</h4>
-                    <p style={{ margin: '0 0 16px', color: '#aaa', fontSize: '0.85rem' }}>Open PhonePe, Google Pay, or Paytm to scan and pay</p>
+                  <div className="upi-qr-card">
+                    <h4>Scan PhonePe QR Code to Pay ₹{total.toLocaleString('en-IN')}</h4>
+                    <p>Open PhonePe, Google Pay, or Paytm to scan and pay</p>
                     
-                    {/* QR Image Box */}
-                    <div style={{ display: 'inline-block', padding: '12px', background: '#fff', borderRadius: '12px', marginBottom: '16px' }}>
+                    <div className="qr-img-wrap">
                       <img 
                         src={upiQrUrl} 
                         alt="PhonePe Scanner QR" 
-                        style={{ width: '180px', height: '180px', objectFit: 'contain', display: 'block' }}
                         onError={(e) => {
                           e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${upiId}&pn=ShopX%20Store&am=${total}`;
                         }}
                       />
                     </div>
 
-                    {/* Copy UPI ID Bar */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', maxWidth: '340px', margin: '0 auto' }}>
-                      <span style={{ fontSize: '0.85rem', color: '#aaa', background: '#222', padding: '8px 12px', borderRadius: '6px', border: '1px solid #333', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                        {upiId}
-                      </span>
-                      <button 
-                        type="button" 
-                        onClick={copyUpiId}
-                        style={{ padding: '8px 14px', background: 'var(--gold, #e2b963)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem' }}
-                      >
-                        Copy
-                      </button>
+                    <div className="upi-copy-bar">
+                      <span>{upiId}</span>
+                      <button type="button" onClick={copyUpiId}>Copy</button>
                     </div>
                   </div>
                 )}
@@ -240,37 +245,37 @@ export default function Checkout() {
               </div>
             </div>
 
-            {/* Order Summary Right Panel */}
-            <div className="order-summary" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', height: 'fit-content' }}>
-              <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 16px' }}>Order Summary</h2>
+            {/* Order Summary */}
+            <div className="order-summary-card">
+              <h2 className="cs-title">Order Summary</h2>
               
-              <div className="order-items" style={{ marginBottom: '16px' }}>
+              <div className="order-items-list">
                 {cart.map((item, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
-                    <img src={getImageUrl(item.product?.image || item.image)} alt={item.product?.name} style={{ width: '50px', height: '50px', borderRadius: '8px', objectFit: 'cover', background: '#111' }} onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ margin: 0, color: '#fff', fontSize: '0.88rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.product?.name || item.name}</p>
-                      <p style={{ margin: '2px 0 0', color: '#888', fontSize: '0.78rem' }}>Size: {item.size} · Qty: {item.qty || item.quantity || 1}</p>
+                  <div key={i} className="summary-item">
+                    <img src={getImageUrl(item.product?.image || item.image)} alt={item.product?.name} onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} />
+                    <div className="item-details">
+                      <p className="item-name">{item.product?.name || item.name}</p>
+                      <p className="item-meta">Size: {item.size} · Qty: {item.qty || item.quantity || 1}</p>
                     </div>
-                    <span style={{ color: 'var(--gold, #e2b963)', fontWeight: '600', fontSize: '0.9rem' }}>₹{((item.product?.price || item.price || 0) * (item.qty || item.quantity || 1)).toLocaleString('en-IN')}</span>
+                    <span className="item-price">₹{((item.product?.price || item.price || 0) * (item.qty || item.quantity || 1)).toLocaleString('en-IN')}</span>
                   </div>
                 ))}
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <input placeholder="Coupon (SHOPX20)" value={coupon} onChange={e => setCoupon(e.target.value)} style={{ flex: 1, padding: '8px 12px', borderRadius: '6px', background: '#111', border: '1px solid #333', color: '#fff', fontSize: '0.85rem' }} />
-                <button type="button" onClick={handleCoupon} style={{ padding: '8px 16px', background: 'var(--gold, #e2b963)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Apply</button>
+              <div className="coupon-box">
+                <input placeholder="Coupon (SHOPX20)" value={coupon} onChange={e => setCoupon(e.target.value)} />
+                <button type="button" onClick={handleCoupon}>Apply</button>
               </div>
-              {couponMsg && <p style={{ fontSize: '0.8rem', margin: '0 0 12px', color: couponApplied ? '#2ea44f' : '#ff4d4d' }}>{couponMsg}</p>}
+              {couponMsg && <p className="coupon-msg" style={{ color: couponApplied ? '#2ea44f' : '#ff4d4d' }}>{couponMsg}</p>}
 
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px', fontSize: '0.88rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#aaa' }}><span>Subtotal</span><span>₹{totalPrice.toLocaleString('en-IN')}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#aaa' }}><span>Discount</span><span style={{ color: '#2ea44f' }}>-₹{discount.toLocaleString('en-IN')}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#aaa' }}><span>Shipping</span><span>{shipping === 0 ? 'Free' : '₹' + shipping}</span></div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}><span>Total</span><span style={{ color: 'var(--gold, #e2b963)' }}>₹{total.toLocaleString('en-IN')}</span></div>
+              <div className="totals-breakdown">
+                <div className="total-line"><span>Subtotal</span><span>₹{totalPrice.toLocaleString('en-IN')}</span></div>
+                <div className="total-line"><span>Discount</span><span className="discount-val">-₹{discount.toLocaleString('en-IN')}</span></div>
+                <div className="total-line"><span>Shipping</span><span>{shipping === 0 ? 'Free' : '₹' + shipping}</span></div>
+                <div className="total-line grand-total"><span>Total</span><span>₹{total.toLocaleString('en-IN')}</span></div>
               </div>
 
-              <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', marginTop: '20px', borderRadius: '8px', background: 'var(--gold, #e2b963)', color: '#000', fontWeight: 'bold', fontSize: '1rem', border: 'none', cursor: 'pointer' }}>
+              <button type="submit" disabled={loading} className="btn-place-order">
                 {loading ? 'Processing Order...' : 'Place Order →'}
               </button>
             </div>
@@ -278,6 +283,311 @@ export default function Checkout() {
           </div>
         </form>
       </div>
+
+      {/* Embedded 100% Mobile Responsive Styles */}
+      <style>{`
+        .checkout-page-container {
+          padding-top: var(--nav-h, 100px);
+          padding-bottom: 80px;
+          color: #fff;
+        }
+
+        .checkout-wrap {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 16px;
+        }
+
+        .checkout-title {
+          color: #fff;
+          font-size: 1.8rem;
+          margin-bottom: 24px;
+        }
+
+        .checkout-layout {
+          display: grid;
+          grid-template-columns: 1fr 380px;
+          gap: 24px;
+        }
+
+        .checkout-section {
+          background: var(--bg-2, #181824);
+          padding: 24px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.08);
+          margin-bottom: 24px;
+        }
+
+        .cs-title {
+          color: #fff;
+          font-size: 1.2rem;
+          margin: 0 0 20px;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+          padding-bottom: 12px;
+        }
+
+        .form-grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+
+        .single-group {
+          margin-bottom: 16px;
+        }
+
+        .form-group label {
+          display: block;
+          color: #aaa;
+          font-size: 0.85rem;
+          margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+          width: 100%;
+          padding: 10px 14px;
+          background: #111;
+          border: 1px solid #333;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 0.9rem;
+          box-sizing: border-box;
+        }
+
+        .payment-methods {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .payment-option {
+          padding: 14px 16px;
+          border-radius: 10px;
+          background: #111;
+          border: 1px solid #333;
+          color: #fff;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .payment-option.active {
+          background: rgba(226, 185, 99, 0.12);
+          border-color: var(--gold, #e2b963);
+        }
+
+        .upi-qr-card {
+          margin-top: 16px;
+          padding: 20px;
+          border-radius: 12px;
+          background: #111;
+          border: 1px dashed var(--gold, #e2b963);
+          text-align: center;
+          color: #fff;
+        }
+
+        .upi-qr-card h4 {
+          margin: 0 0 8px;
+          color: var(--gold, #e2b963);
+        }
+
+        .upi-qr-card p {
+          margin: 0 0 16px;
+          color: #aaa;
+          font-size: 0.85rem;
+        }
+
+        .qr-img-wrap {
+          display: inline-block;
+          padding: 12px;
+          background: #fff;
+          border-radius: 12px;
+          margin-bottom: 16px;
+        }
+
+        .qr-img-wrap img {
+          width: 180px;
+          height: 180px;
+          object-fit: contain;
+          display: block;
+        }
+
+        .upi-copy-bar {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          max-width: 340px;
+          margin: 0 auto;
+        }
+
+        .upi-copy-bar span {
+          font-size: 0.85rem;
+          color: #aaa;
+          background: #222;
+          padding: 8px 12px;
+          border-radius: 6px;
+          border: 1px solid #333;
+          flex: 1;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+
+        .upi-copy-bar button {
+          padding: 8px 14px;
+          background: var(--gold, #e2b963);
+          color: #000;
+          border: none;
+          border-radius: 6px;
+          font-weight: bold;
+          cursor: pointer;
+          font-size: 0.85rem;
+        }
+
+        .order-summary-card {
+          background: var(--bg-2, #181824);
+          padding: 24px;
+          border-radius: 14px;
+          border: 1px solid rgba(255,255,255,0.08);
+          height: fit-content;
+        }
+
+        .summary-item {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 12px;
+          align-items: center;
+        }
+
+        .summary-item img {
+          width: 50px;
+          height: 50px;
+          border-radius: 8px;
+          object-fit: cover;
+          background: #111;
+        }
+
+        .item-details {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .item-name {
+          margin: 0;
+          color: #fff;
+          font-size: 0.88rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .item-meta {
+          margin: 2px 0 0;
+          color: #888;
+          font-size: 0.78rem;
+        }
+
+        .item-price {
+          color: var(--gold, #e2b963);
+          font-weight: 600;
+          font-size: 0.9rem;
+        }
+
+        .coupon-box {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+
+        .coupon-box input {
+          flex: 1;
+          padding: 8px 12px;
+          border-radius: 6px;
+          background: #111;
+          border: 1px solid #333;
+          color: #fff;
+          font-size: 0.85rem;
+        }
+
+        .coupon-box button {
+          padding: 8px 16px;
+          background: var(--gold, #e2b963);
+          color: #000;
+          border: none;
+          border-radius: 6px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+
+        .totals-breakdown {
+          border-top: 1px solid rgba(255,255,255,0.08);
+          padding-top: 12px;
+          font-size: 0.88rem;
+        }
+
+        .total-line {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 8px;
+          color: #aaa;
+        }
+
+        .discount-val {
+          color: #2ea44f;
+        }
+
+        .grand-total {
+          padding-top: 12px;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          color: #fff;
+          font-weight: bold;
+          font-size: 1.1rem;
+        }
+
+        .grand-total span:last-child {
+          color: var(--gold, #e2b963);
+        }
+
+        .btn-place-order {
+          width: 100%;
+          padding: 14px;
+          margin-top: 20px;
+          border-radius: 8px;
+          background: var(--gold, #e2b963);
+          color: #000;
+          font-weight: bold;
+          font-size: 1rem;
+          border: none;
+          cursor: pointer;
+        }
+
+        /* 📱 MOBILE RESPONSIVE MEDIA QUERIES (< 868px) */
+        @media (max-width: 868px) {
+          .checkout-layout {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .form-grid-2 {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+
+          .checkout-section,
+          .order-summary-card {
+            padding: 16px;
+          }
+
+          .checkout-title {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
