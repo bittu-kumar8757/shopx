@@ -24,7 +24,7 @@ export default function MyOrders() {
       });
   }, []);
 
-  // Order ID me double ## clean karne ke liye helper function
+  // Helper function to remove duplicate '##' from Order IDs
   const formatOrderId = (rawId, index) => {
     if (!rawId) return `SX${10000 + index}`;
     const cleanStr = String(rawId).replace(/#/g, '');
@@ -33,23 +33,27 @@ export default function MyOrders() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+      <div style={{ minHeight: '70vh', paddingTop: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
         <p>Loading your orders...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '900px', margin: '30px auto 80px', padding: '0 16px', minHeight: '70vh' }}>
+    /* 👈 FIXED: paddingTop: '100px' added so title won't overlap with Navbar */
+    <div style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '100px', paddingBottom: '80px', paddingLeft: '16px', paddingRight: '16px', minHeight: '75vh' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ fontSize: '1.6rem', fontWeight: '700', margin: 0, color: '#fff' }}>My Orders</h1>
-          <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#888' }}>
-            {orders.length} {orders.length === 1 ? 'order' : 'orders'} placed
+          <h1 style={{ fontSize: '1.75rem', fontWeight: '700', margin: 0, color: '#fff' }}>My Orders 📦</h1>
+          <p style={{ margin: '4px 0 0', fontSize: '0.88rem', color: '#888' }}>
+            Track and manage your recent purchases
           </p>
         </div>
+        <Link to="/shop" className="btn btn-ghost" style={{ fontSize: '0.85rem' }}>
+          Continue Shopping →
+        </Link>
       </div>
 
       {/* Empty State */}
@@ -84,7 +88,7 @@ export default function MyOrders() {
                 border: '1px solid rgba(255, 255, 255, 0.08)',
                 overflow: 'hidden'
               }}>
-                {/* Order Top Strip (Order ID & Date) */}
+                {/* Order Top Header */}
                 <div style={{
                   padding: '12px 20px',
                   background: 'rgba(255, 255, 255, 0.03)',
@@ -103,7 +107,7 @@ export default function MyOrders() {
                   </div>
                 </div>
 
-                {/* Products List - Flipkart / Meesho Style Horizontal Item */}
+                {/* Products List */}
                 <div>
                   {items.map((item, itemIdx) => (
                     <div key={itemIdx} style={{
@@ -113,7 +117,6 @@ export default function MyOrders() {
                       alignItems: 'center',
                       borderBottom: itemIdx === items.length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.04)'
                     }}>
-                      {/* Product Thumbnail */}
                       <img 
                         src={getImageUrl(item.image)} 
                         alt={item.name}
@@ -129,7 +132,6 @@ export default function MyOrders() {
                         onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }}
                       />
 
-                      {/* Product Details */}
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <h4 style={{
                           margin: '0 0 6px',
@@ -149,7 +151,7 @@ export default function MyOrders() {
                         </div>
                       </div>
 
-                      {/* Flipkart Style Delivery Status Column */}
+                      {/* Status Column */}
                       <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: '12px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end', marginBottom: '4px' }}>
                           <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: statusColor, display: 'inline-block' }}></span>
@@ -165,7 +167,7 @@ export default function MyOrders() {
                   ))}
                 </div>
 
-                {/* Order Footer - Payment & Total */}
+                {/* Footer Total */}
                 <div style={{
                   padding: '12px 20px',
                   background: 'rgba(0, 0, 0, 0.2)',
@@ -176,10 +178,10 @@ export default function MyOrders() {
                   fontSize: '0.88rem'
                 }}>
                   <span style={{ color: '#888', fontSize: '0.8rem' }}>
-                    Payment Mode: <strong style={{ color: '#ddd', textTransform: 'uppercase' }}>{order.payment || 'Card'}</strong>
+                    Payment: <strong style={{ color: '#ddd', textTransform: 'uppercase' }}>{order.payment || 'Card'}</strong>
                   </span>
                   <div>
-                    <span style={{ color: '#aaa', fontSize: '0.85rem' }}>Total Amount: </span>
+                    <span style={{ color: '#aaa', fontSize: '0.85rem' }}>Total Paid: </span>
                     <strong style={{ color: 'var(--gold, #e2b963)', fontSize: '1.05rem', marginLeft: '4px' }}>
                       ₹{orderTotal.toLocaleString('en-IN')}
                     </strong>
