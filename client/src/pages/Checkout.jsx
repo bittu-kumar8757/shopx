@@ -12,8 +12,23 @@ export default function Checkout() {
   const [coupon, setCoupon] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponMsg, setCouponMsg] = useState('');
-  const [payment, setPayment] = useState('card');
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', address: '', city: '', pincode: '' });
+  const [payment, setPayment] = useState('cod');
+  
+  // Flipkart/Amazon/Meesho style Complete Address State
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    phone: '',
+    alternatePhone: '',
+    email: '',
+    houseNo: '',
+    street: '',
+    landmark: '',
+    city: '',
+    state: 'Bihar',
+    pincode: '',
+    addressType: 'Home'
+  });
 
   const discount = couponApplied ? Math.round(totalPrice * 0.2) : 0;
   const shipping = totalPrice >= 999 ? 0 : 99;
@@ -29,18 +44,26 @@ export default function Checkout() {
     }
   };
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (cart.length === 0) { showToast('Cart is empty!', 'error'); return; }
     setLoading(true);
 
+    const fullFormattedAddress = `${form.houseNo}, ${form.street}${form.landmark ? ', Near ' + form.landmark : ''}, ${form.city}, ${form.state} - ${form.pincode} (${form.addressType})`;
+
     const orderPayload = {
       customer: `${form.firstName} ${form.lastName}`.trim(),
-      email: form.email, 
+      email: form.email,
       phone: form.phone,
-      address: form.address, 
-      city: form.city, 
+      alternatePhone: form.alternatePhone,
+      address: fullFormattedAddress,
+      houseNo: form.houseNo,
+      street: form.street,
+      landmark: form.landmark,
+      city: form.city,
+      state: form.state,
       pincode: form.pincode,
+      addressType: form.addressType,
       payment,
       items: cart.map(i => ({
         id: i.id || i.product?._id || i.product?.id,
@@ -51,9 +74,9 @@ export default function Checkout() {
         quantity: i.qty || i.quantity || 1,
         colorIndex: i.colorIndex || 0
       })),
-      subtotal: totalPrice, 
-      discount, 
-      shipping, 
+      subtotal: totalPrice,
+      discount,
+      shipping,
       totalAmount: total,
       total: total,
       status: 'Processing',
@@ -61,11 +84,9 @@ export default function Checkout() {
     };
 
     try {
-      // 1. Send Order to Backend API (Triggers Nodemailer Email)
       const res = await placeOrder(orderPayload);
       const backendSavedOrder = res.data?.data || res.data || orderPayload;
 
-      // 2. Save in Local Storage as Sync Backup for My Orders
       const existingOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
       const uniqueOrders = [backendSavedOrder, ...existingOrders.filter(o => o.id !== backendSavedOrder.id)];
       localStorage.setItem('shopx-orders', JSON.stringify(uniqueOrders));
@@ -75,8 +96,7 @@ export default function Checkout() {
       navigate('/success', { state: { orderId: backendSavedOrder.id || `SX${Date.now()}` } });
     } catch (err) {
       console.error('Order placement API failed:', err);
-      
-      // Fallback: If Render server sleeping, save locally so order is not lost
+
       const existingOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
       localStorage.setItem('shopx-orders', JSON.stringify([orderPayload, ...existingOrders]));
 
@@ -88,88 +108,136 @@ export default function Checkout() {
   };
 
   return (
-    <div className="page active" style={{ paddingTop: 'var(--nav-h)' }}>
-      <div className="checkout-wrap">
-        <h1 className="checkout-title">Checkout</h1>
+    <div className="page active" style={{ paddingTop: 'var(--nav-h, 100px)', paddingBottom: '80px' }}>
+      <div className="checkout-wrap" style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 16px' }}>
+        <h1 className="checkout-title" style={{ color: '#fff', fontSize: '1.8rem', marginBottom: '24px' }}>Checkout</h1>
         <form onSubmit={handleSubmit}>
-          <div className="checkout-layout">
-            {/* Shipping */}
+          <div className="checkout-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '24px' }}>
+            
+            {/* Shipping & Address Section */}
             <div>
-              <div className="checkout-section">
-                <h2 className="cs-title">Shipping Details</h2>
-                <div className="form-row">
-                  <div className="form-group"><label>First Name</label><input required value={form.firstName} onChange={e => setForm(f => ({...f, firstName: e.target.value}))} placeholder="Rahul" /></div>
-                  <div className="form-group"><label>Last Name</label><input value={form.lastName} onChange={e => setForm(f => ({...f, lastName: e.target.value}))} placeholder="Sharma" /></div>
+              <div className="checkout-section" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '24px' }}>
+                <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+                  📍 Delivery Address (Flipkart / Amazon Style)
+                </h2>
+
+                {/* Name & Phone */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>First Name *</label><input required value={form.firstName} onChange={e => setForm(f => ({...f, firstName: e.target.value}))} placeholder="Rahul" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Last Name</label><input value={form.lastName} onChange={e => setForm(f => ({...f, lastName: e.target.value}))} placeholder="Sharma" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
                 </div>
-                <div className="form-group"><label>Email</label><input type="email" required value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder="rahul@example.com" /></div>
-                <div className="form-group"><label>Phone</label><input value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} placeholder="+91 98765 43210" /></div>
-                <div className="form-group"><label>Address</label><input required value={form.address} onChange={e => setForm(f => ({...f, address: e.target.value}))} placeholder="123, MG Road" /></div>
-                <div className="form-row">
-                  <div className="form-group"><label>City</label><input value={form.city} onChange={e => setForm(f => ({...f, city: e.target.value}))} placeholder="Mumbai" /></div>
-                  <div className="form-group"><label>PIN Code</label><input value={form.pincode} onChange={e => setForm(f => ({...f, pincode: e.target.value}))} placeholder="400001" /></div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Phone Number *</label><input type="tel" required value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} placeholder="10-digit mobile number" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Alternate Phone (Optional)</label><input type="tel" value={form.alternatePhone} onChange={e => setForm(f => ({...f, alternatePhone: e.target.value}))} placeholder="Alternate number" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
                 </div>
+
+                <div className="form-group" style={{ marginBottom: '16px' }}>
+                  <label style={{ color: '#aaa', fontSize: '0.85rem' }}>Email Address *</label>
+                  <input type="email" required value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} placeholder="rahul@example.com" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} />
+                </div>
+
+                {/* Flat / House No & Street */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Flat, House No., Building *</label><input required value={form.houseNo} onChange={e => setForm(f => ({...f, houseNo: e.target.value}))} placeholder="Flat No. 402, Shivam Apts" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Area, Street, Sector, Village *</label><input required value={form.street} onChange={e => setForm(f => ({...f, street: e.target.value}))} placeholder="MG Road, Sector 4" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                </div>
+
+                {/* Landmark & Pincode */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Landmark (Optional)</label><input value={form.landmark} onChange={e => setForm(f => ({...f, landmark: e.target.value}))} placeholder="Near City Bank / Temple" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>6-Digit PIN Code *</label><input required maxLength={6} value={form.pincode} onChange={e => setForm(f => ({...f, pincode: e.target.value}))} placeholder="843103" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                </div>
+
+                {/* City & State */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Town / City *</label><input required value={form.city} onChange={e => setForm(f => ({...f, city: e.target.value}))} placeholder="Muzaffarpur" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
+                  <div className="form-group">
+                    <label style={{ color: '#aaa', fontSize: '0.85rem' }}>State *</label>
+                    <select value={form.state} onChange={e => setForm(f => ({...f, state: e.target.value}))} style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }}>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="West Bengal">West Bengal</option>
+                      <option value="Jharkhand">Jharkhand</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Address Type Tag (Home / Work) */}
+                <div className="form-group">
+                  <label style={{ color: '#aaa', fontSize: '0.85rem', display: 'block', marginBottom: '8px' }}>Address Type</label>
+                  <div style={{ display: 'flex', gap: '16px' }}>
+                    {['Home', 'Work'].map(type => (
+                      <label key={type} style={{
+                        padding: '8px 20px', borderRadius: '20px', background: form.addressType === type ? 'rgba(226, 185, 99, 0.2)' : '#111',
+                        border: `1px solid ${form.addressType === type ? 'var(--gold, #e2b963)' : '#333'}`,
+                        color: form.addressType === type ? 'var(--gold, #e2b963)' : '#aaa', cursor: 'pointer', fontSize: '0.85rem'
+                      }}>
+                        <input type="radio" name="addressType" value={type} checked={form.addressType === type} onChange={() => setForm(f => ({...f, addressType: type}))} style={{ display: 'none' }} />
+                        {type === 'Home' ? '🏠 Home (All day delivery)' : '🏢 Work (Delivery 10 AM - 6 PM)'}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
               </div>
-              <div className="checkout-section">
-                <h2 className="cs-title">Payment</h2>
-                <div className="payment-methods">
-                  {[['card','💳 Credit / Debit Card'],['upi','📱 UPI'],['cod','💵 Cash on Delivery']].map(([val, label]) => (
-                    <label key={val} className={`payment-opt ${payment === val ? 'active' : ''}`}>
+
+              {/* Payment Section */}
+              <div className="checkout-section" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 16px' }}>Payment Mode</h2>
+                <div className="payment-methods" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {[['cod','💵 Cash on Delivery (COD)'],['upi','📱 UPI / PhonePe / GPay'],['card','💳 Credit / Debit Card']].map(([val, label]) => (
+                    <label key={val} style={{
+                      padding: '14px 16px', borderRadius: '10px', background: payment === val ? 'rgba(226, 185, 99, 0.12)' : '#111',
+                      border: `1px solid ${payment === val ? 'var(--gold, #e2b963)' : '#333'}`, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
+                    }}>
                       <input type="radio" name="payment" value={val} checked={payment === val} onChange={() => setPayment(val)} />
                       {label}
                     </label>
                   ))}
                 </div>
-                {payment === 'card' && (
-                  <div>
-                    <div className="form-group"><label>Card Number</label><input placeholder="1234 5678 9012 3456" maxLength={19} /></div>
-                    <div className="form-row">
-                      <div className="form-group"><label>Expiry</label><input placeholder="MM/YY" maxLength={5} /></div>
-                      <div className="form-group"><label>CVV</label><input placeholder="•••" maxLength={3} /></div>
-                    </div>
-                  </div>
-                )}
-                {payment === 'upi' && (
-                  <div className="form-group"><label>UPI ID</label><input placeholder="yourname@upi" /></div>
-                )}
-                {payment === 'cod' && (
-                  <div className="cod-notice">ℹ️ Pay when your order arrives. Available for orders under ₹10,000.</div>
-                )}
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="order-summary">
-              <h2 className="cs-title">Order Summary</h2>
-              <div className="order-items">
+            {/* Order Summary Right Panel */}
+            <div className="order-summary" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', height: 'fit-content' }}>
+              <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 16px' }}>Order Summary</h2>
+              
+              <div className="order-items" style={{ marginBottom: '16px' }}>
                 {cart.map((item, i) => (
-                  <div key={i} className="order-item">
-                    <div className="order-item-img">
-                      <img src={getImageUrl(item.product?.image)} alt={item.product?.name} onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} />
+                  <div key={i} style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
+                    <img src={getImageUrl(item.product?.image || item.image)} alt={item.product?.name} style={{ width: '50px', height: '50px', borderRadius: '8px', objectFit: 'cover', background: '#111' }} onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ margin: 0, color: '#fff', fontSize: '0.88rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.product?.name || item.name}</p>
+                      <p style={{ margin: '2px 0 0', color: '#888', fontSize: '0.78rem' }}>Size: {item.size} · Qty: {item.qty || item.quantity || 1}</p>
                     </div>
-                    <div className="order-item-info">
-                      <p className="order-item-name">{item.product?.name}</p>
-                      <p className="order-item-meta">Size: {item.size} · Qty: {item.qty}</p>
-                    </div>
-                    <span className="order-item-price">₹{((item.product?.price || 0) * item.qty).toLocaleString('en-IN')}</span>
+                    <span style={{ color: 'var(--gold, #e2b963)', fontWeight: '600', fontSize: '0.9rem' }}>₹{((item.product?.price || item.price || 0) * (item.qty || item.quantity || 1)).toLocaleString('en-IN')}</span>
                   </div>
                 ))}
               </div>
-              <div className="coupon-row">
-                <input className="coupon-input" placeholder="Coupon (SHOPX20)" value={coupon} onChange={e => setCoupon(e.target.value)} />
-                <button type="button" className="btn-apply" onClick={handleCoupon}>Apply</button>
+
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                <input placeholder="Coupon (SHOPX20)" value={coupon} onChange={e => setCoupon(e.target.value)} style={{ flex: 1, padding: '8px 12px', borderRadius: '6px', background: '#111', border: '1px solid #333', color: '#fff', fontSize: '0.85rem' }} />
+                <button type="button" onClick={handleCoupon} style={{ padding: '8px 16px', background: 'var(--gold, #e2b963)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>Apply</button>
               </div>
-              <p className="coupon-msg" style={{ color: couponApplied ? 'var(--green)' : 'var(--rose)' }}>{couponMsg}</p>
-              <div className="order-totals">
-                <div className="total-row"><span>Subtotal</span><span>₹{totalPrice.toLocaleString('en-IN')}</span></div>
-                <div className="total-row"><span>Discount</span><span className="discount-text">-₹{discount.toLocaleString('en-IN')}</span></div>
-                <div className="total-row"><span>Shipping</span><span>{shipping === 0 ? 'Free' : '₹' + shipping}</span></div>
-                <div className="total-row grand-total"><span>Total</span><span>₹{total.toLocaleString('en-IN')}</span></div>
+              {couponMsg && <p style={{ fontSize: '0.8rem', margin: '0 0 12px', color: couponApplied ? '#2ea44f' : '#ff4d4d' }}>{couponMsg}</p>}
+
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px', fontSize: '0.88rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#aaa' }}><span>Subtotal</span><span>₹{totalPrice.toLocaleString('en-IN')}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#aaa' }}><span>Discount</span><span style={{ color: '#2ea44f' }}>-₹{discount.toLocaleString('en-IN')}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#aaa' }}><span>Shipping</span><span>{shipping === 0 ? 'Free' : '₹' + shipping}</span></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', color: '#fff', fontWeight: 'bold', fontSize: '1.1rem' }}><span>Total</span><span style={{ color: 'var(--gold, #e2b963)' }}>₹{total.toLocaleString('en-IN')}</span></div>
               </div>
-              <button type="submit" className="btn btn-primary place-order-btn" disabled={loading}>
-                {loading ? 'Processing...' : 'Place Order →'}
+
+              <button type="submit" disabled={loading} style={{ width: '100%', padding: '14px', marginTop: '20px', borderRadius: '8px', background: 'var(--gold, #e2b963)', color: '#000', fontWeight: 'bold', fontSize: '1rem', border: 'none', cursor: 'pointer' }}>
+                {loading ? 'Processing Order...' : 'Place Order →'}
               </button>
-              <p className="secure-note">🔒 100% Secure & Encrypted Payment</p>
             </div>
+
           </div>
         </form>
       </div>
