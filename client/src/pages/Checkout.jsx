@@ -34,16 +34,41 @@ export default function Checkout() {
     if (cart.length === 0) { showToast('Cart is empty!', 'error'); return; }
     setLoading(true);
     try {
-      const res = await placeOrder({
+      // 👈 FIXED: Items payload me full details (name, image, price) include kiye gaye hain
+      const orderPayload = {
         customer: `${form.firstName} ${form.lastName}`.trim(),
-        email: form.email, phone: form.phone,
-        address: form.address, city: form.city, pincode: form.pincode,
+        email: form.email, 
+        phone: form.phone,
+        address: form.address, 
+        city: form.city, 
+        pincode: form.pincode,
         payment,
-        items: cart.map(i => ({ id: i.id, size: i.size, qty: i.qty, colorIndex: i.colorIndex })),
-        subtotal: totalPrice, discount, shipping, total,
-      });
+        items: cart.map(i => ({
+          id: i.id,
+          name: i.product?.name || i.name || 'Product',
+          image: i.product?.image || i.image || 'product_tshirt.jpg',
+          price: i.product?.price || i.price || 0,
+          size: i.size,
+          quantity: i.qty || 1,
+          colorIndex: i.colorIndex || 0
+        })),
+        subtotal: totalPrice, 
+        discount, 
+        shipping, 
+        totalAmount: total,
+        total: total,
+        status: 'Processing',
+        createdAt: new Date().toISOString()
+      };
+
+      const res = await placeOrder(orderPayload);
+
+      // Backup local storage save for instant user access
+      const existingOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
+      localStorage.setItem('shopx-orders', JSON.stringify([res.data?.data || orderPayload, ...existingOrders]));
+
       clearCart();
-      navigate('/success', { state: { orderId: res.data.data.id } });
+      navigate('/success', { state: { orderId: res.data?.data?.id || Date.now() } });
     } catch {
       showToast('Failed to place order. Try again!', 'error');
     } finally {
