@@ -14,7 +14,7 @@ export default function Checkout() {
   const [couponMsg, setCouponMsg] = useState('');
   const [payment, setPayment] = useState('cod');
   
-  // Flipkart/Amazon/Meesho style Complete Address State
+  // Clean Address State (Without Address Type)
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -26,8 +26,7 @@ export default function Checkout() {
     landmark: '',
     city: '',
     state: 'Bihar',
-    pincode: '',
-    addressType: 'Home'
+    pincode: ''
   });
 
   const discount = couponApplied ? Math.round(totalPrice * 0.2) : 0;
@@ -49,7 +48,7 @@ export default function Checkout() {
     if (cart.length === 0) { showToast('Cart is empty!', 'error'); return; }
     setLoading(true);
 
-    const fullFormattedAddress = `${form.houseNo}, ${form.street}${form.landmark ? ', Near ' + form.landmark : ''}, ${form.city}, ${form.state} - ${form.pincode} (${form.addressType})`;
+    const fullFormattedAddress = `${form.houseNo}, ${form.street}${form.landmark ? ', Near ' + form.landmark : ''}, ${form.city}, ${form.state} - ${form.pincode}`;
 
     const orderPayload = {
       customer: `${form.firstName} ${form.lastName}`.trim(),
@@ -63,7 +62,6 @@ export default function Checkout() {
       city: form.city,
       state: form.state,
       pincode: form.pincode,
-      addressType: form.addressType,
       payment,
       items: cart.map(i => ({
         id: i.id || i.product?._id || i.product?.id,
@@ -118,7 +116,7 @@ export default function Checkout() {
             <div>
               <div className="checkout-section" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '24px' }}>
                 <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 20px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
-                  📍 Delivery Address (Flipkart / Amazon Style)
+                  📍 Delivery Address
                 </h2>
 
                 {/* Name & Phone */}
@@ -150,7 +148,7 @@ export default function Checkout() {
                 </div>
 
                 {/* City & State */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div className="form-group"><label style={{ color: '#aaa', fontSize: '0.85rem' }}>Town / City *</label><input required value={form.city} onChange={e => setForm(f => ({...f, city: e.target.value}))} placeholder="Muzaffarpur" style={{ width: '100%', padding: '10px 14px', background: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }} /></div>
                   <div className="form-group">
                     <label style={{ color: '#aaa', fontSize: '0.85rem' }}>State *</label>
@@ -164,23 +162,6 @@ export default function Checkout() {
                       <option value="Karnataka">Karnataka</option>
                       <option value="Other">Other</option>
                     </select>
-                  </div>
-                </div>
-
-                {/* Address Type Tag (Home / Work) */}
-                <div className="form-group">
-                  <label style={{ color: '#aaa', fontSize: '0.85rem', display: 'block', marginBottom: '8px' }}>Address Type</label>
-                  <div style={{ display: 'flex', gap: '16px' }}>
-                    {['Home', 'Work'].map(type => (
-                      <label key={type} style={{
-                        padding: '8px 20px', borderRadius: '20px', background: form.addressType === type ? 'rgba(226, 185, 99, 0.2)' : '#111',
-                        border: `1px solid ${form.addressType === type ? 'var(--gold, #e2b963)' : '#333'}`,
-                        color: form.addressType === type ? 'var(--gold, #e2b963)' : '#aaa', cursor: 'pointer', fontSize: '0.85rem'
-                      }}>
-                        <input type="radio" name="addressType" value={type} checked={form.addressType === type} onChange={() => setForm(f => ({...f, addressType: type}))} style={{ display: 'none' }} />
-                        {type === 'Home' ? '🏠 Home (All day delivery)' : '🏢 Work (Delivery 10 AM - 6 PM)'}
-                      </label>
-                    ))}
                   </div>
                 </div>
 
