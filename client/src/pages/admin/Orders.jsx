@@ -7,17 +7,16 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [selectedOrder, setSelectedOrder] = useState(null); // Address details popup state
   const { showToast } = useToast();
 
   const loadOrders = () => {
     setLoading(true);
-    // 1. Fetch local storage saved orders
     const localSaved = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
 
     fetchOrders()
       .then(res => {
         const apiOrders = res.data?.data || res.data || [];
-        // Combine both sources to avoid empty state on server restart
         const combined = [...apiOrders, ...localSaved];
         const uniqueOrders = Array.from(new Map(combined.map(o => [o.id || o.createdAt, o])).values());
         
@@ -73,7 +72,8 @@ export default function Orders() {
 
   const filteredOrders = orders.filter(o => {
     const matchesSearch = String(o.id || '').toLowerCase().includes(search.toLowerCase()) || 
-                          String(o.customer || o.email || '').toLowerCase().includes(search.toLowerCase());
+                          String(o.customer || o.email || '').toLowerCase().includes(search.toLowerCase()) ||
+                          String(o.city || '').toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'all' || 
                           (statusFilter === 'pending' && o.status !== 'Delivered') || 
                           (statusFilter === 'delivered' && o.status === 'Delivered');
@@ -84,11 +84,13 @@ export default function Orders() {
 
   return (
     <div style={{ padding: '24px' }}>
+      {/* Header */}
       <div style={{ marginBottom: '24px' }}>
         <h1 style={{ fontSize: '1.8rem', margin: 0, color: '#fff' }}>Orders</h1>
         <p style={{ margin: '4px 0 0', color: '#888', fontSize: '0.9rem' }}>ShopX Control Panel</p>
       </div>
 
+      {/* Stats Bar */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
@@ -113,9 +115,10 @@ export default function Orders() {
         </div>
       </div>
 
+      {/* Filters */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
         <input 
-          placeholder="Search by order ID or customer..." 
+          placeholder="Search by order ID, customer, city..." 
           value={search}
           onChange={e => setSearch(e.target.value)}
           style={{ flex: 1, padding: '10px 16px', borderRadius: '8px', background: '#181824', border: '1px solid #333', color: '#fff' }}
@@ -131,12 +134,14 @@ export default function Orders() {
         </select>
       </div>
 
+      {/* Table with Added ADDRESS Column */}
       <div style={{ background: '#181824', borderRadius: '12px', border: '1px solid #333', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '850px' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid #333', color: '#888', fontSize: '0.85rem' }}>
               <th style={{ padding: '16px' }}>ORDER ID</th>
               <th style={{ padding: '16px' }}>CUSTOMER</th>
+              <th style={{ padding: '16px' }}>DELIVERY ADDRESS</th>
               <th style={{ padding: '16px' }}>ITEMS</th>
               <th style={{ padding: '16px' }}>TOTAL</th>
               <th style={{ padding: '16px' }}>STATUS</th>
@@ -146,19 +151,37 @@ export default function Orders() {
           <tbody>
             {filteredOrders.length === 0 ? (
               <tr>
-                <td colSpan="6" style={{ padding: '30px', textAlign: 'center', color: '#888' }}>No orders found.</td>
+                <td colSpan="7" style={{ padding: '30px', textAlign: 'center', color: '#888' }}>No orders found.</td>
               </tr>
             ) : (
               filteredOrders.map((o, idx) => {
                 const isDelivered = o.status === 'Delivered';
                 const orderId = String(o.id || `SX${10000 + idx}`).replace(/#/g, '');
+                const fullAddress = `${o.address || 'N/A'}, ${o.city || ''} ${o.pincode ? '- ' + o.pincode : ''}`;
 
                 return (
                   <tr key={o.id || idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <td style={{ padding: '16px', color: 'var(--gold, #e2b963)', fontWeight: '600' }}>
                       #{orderId}
                     </td>
-                    <td style={{ padding: '16px', color: '#fff' }}>{o.customer || o.email || 'Guest'}</td>
+                    <td style={{ padding: '16px', color: '#fff' }}>
+                      <div><strong>{o.customer || 'Guest'}</strong></div>
+                      <div style={{ fontSize: '0.78rem', color: '#888' }}>{o.phone || o.email || ''}</div>
+                    </td>
+                    
+                    {/* 👈 FIXED: ADDRESS COLUMN ADDED */}
+                    <td style={{ padding: '16px', color: '#ddd', fontSize: '0.85rem', maxWidth: '220px' }}>
+                      <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={fullAddress}>
+                        📍 {fullAddress}
+                      </div>
+                      <button 
+                        onClick={() => setSelectedOrder(o)}
+                        style={{ background: 'none', border: 'none', color: 'var(--gold, #e2b963)', fontSize: '0.75rem', cursor: 'pointer', padding: 0, marginTop: '2px' }}
+                      >
+                        View Details
+                      </button>
+                    </td>
+
                     <td style={{ padding: '16px', color: '#aaa' }}>{o.items?.length || 1} item(s)</td>
                     <td style={{ padding: '16px', color: '#fff', fontWeight: '600' }}>₹{o.totalAmount || o.total || 0}</td>
                     <td style={{ padding: '16px' }}>
@@ -214,6 +237,38 @@ export default function Orders() {
           </tbody>
         </table>
       </div>
+
+      {/* Address Details Modal Popup */}
+      {selectedOrder && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px'
+        }}>
+          <div style={{ background: '#181824', borderRadius: '16px', border: '1px solid #444', width: '100%', maxWidth: '480px', padding: '24px', color: '#fff' }}>
+            <h3 style={{ marginTop: 0, marginBottom: '16px', borderBottom: '1px solid #333', paddingBottom: '12px' }}>
+              📍 Full Order Details (#{String(selectedOrder.id).replace(/#/g, '')})
+            </h3>
+            
+            <p><strong>Customer Name:</strong> {selectedOrder.customer || 'Guest'}</p>
+            <p><strong>Phone:</strong> {selectedOrder.phone || 'N/A'}</p>
+            <p><strong>Email:</strong> {selectedOrder.email || 'N/A'}</p>
+            <p><strong>Address:</strong> {selectedOrder.address || 'N/A'}</p>
+            <p><strong>City:</strong> {selectedOrder.city || 'N/A'}</p>
+            <p><strong>PIN Code:</strong> {selectedOrder.pincode || 'N/A'}</p>
+            <p><strong>Payment Mode:</strong> {(selectedOrder.payment || 'COD').toUpperCase()}</p>
+            
+            <button 
+              onClick={() => setSelectedOrder(null)}
+              style={{
+                width: '100%', padding: '10px', borderRadius: '8px', background: 'var(--gold, #e2b963)',
+                color: '#000', fontWeight: 'bold', border: 'none', cursor: 'pointer', marginTop: '16px'
+              }}
+            >
+              Close Window
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
