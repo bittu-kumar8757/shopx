@@ -24,7 +24,6 @@ export default function MyOrders() {
       });
   }, []);
 
-  // Helper function to remove duplicate '##' from Order IDs
   const formatOrderId = (rawId, index) => {
     if (!rawId) return `SX${10000 + index}`;
     const cleanStr = String(rawId).replace(/#/g, '');
@@ -33,166 +32,182 @@ export default function MyOrders() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '70vh', paddingTop: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
+      <div className="page active" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', minHeight: '60vh' }}>
         <p>Loading your orders...</p>
       </div>
     );
   }
 
   return (
-    /* 👈 FIXED: paddingTop: '100px' added so title won't overlap with Navbar */
-    <div style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '100px', paddingBottom: '80px', paddingLeft: '16px', paddingRight: '16px', minHeight: '75vh' }}>
-      
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: '700', margin: 0, color: '#fff' }}>My Orders 📦</h1>
-          <p style={{ margin: '4px 0 0', fontSize: '0.88rem', color: '#888' }}>
-            Track and manage your recent purchases
-          </p>
-        </div>
-        <Link to="/shop" className="btn btn-ghost" style={{ fontSize: '0.85rem' }}>
-          Continue Shopping →
-        </Link>
-      </div>
-
-      {/* Empty State */}
-      {orders.length === 0 ? (
-        <div style={{
-          textAlign: 'center',
-          padding: '60px 20px',
-          background: 'var(--bg-2, #181824)',
-          borderRadius: '16px',
-          border: '1px solid rgba(255, 255, 255, 0.08)'
-        }}>
-          <div style={{ fontSize: '40px', marginBottom: '12px' }}>🛍️</div>
-          <h3 style={{ fontSize: '1.2rem', marginBottom: '8px', color: '#fff' }}>No Orders Found</h3>
-          <p style={{ color: '#888', marginBottom: '20px', fontSize: '0.9rem' }}>Aapne abhi tak koi order place nahi kiya hai.</p>
-          <Link to="/shop" className="btn btn-primary" style={{ padding: '10px 24px' }}>
-            Explore Shop
+    <div className="page active">
+      <div style={{ maxWidth: '920px', margin: '0 auto', padding: '24px 16px 80px' }}>
+        
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <h1 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0, color: '#fff' }}>My Orders 📦</h1>
+            <p style={{ margin: '4px 0 0', fontSize: '0.88rem', color: '#888' }}>
+              {orders.length} {orders.length === 1 ? 'order' : 'orders'} placed so far
+            </p>
+          </div>
+          <Link to="/shop" className="btn btn-ghost" style={{ fontSize: '0.85rem', padding: '8px 16px' }}>
+            Continue Shopping →
           </Link>
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {orders.map((order, orderIdx) => {
-            const formattedId = formatOrderId(order.id, orderIdx);
-            const isDelivered = order.status === 'Delivered';
-            const statusColor = isDelivered ? '#2ea44f' : '#e2b963';
-            const orderTotal = order.totalAmount || order.total || 0;
-            const items = order.items || [];
 
-            return (
-              <div key={order.id || orderIdx} style={{
-                background: 'var(--bg-2, #181824)',
-                borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                overflow: 'hidden'
-              }}>
-                {/* Order Top Header */}
-                <div style={{
-                  padding: '12px 20px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
-                  display: 'flex',
-                  justify: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '0.85rem'
+        {/* Empty State */}
+        {orders.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '60px 20px',
+            background: 'var(--bg-2, #181824)',
+            borderRadius: '16px',
+            border: '1px solid rgba(255, 255, 255, 0.08)'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🛍️</div>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '8px', color: '#fff' }}>No Orders Yet</h3>
+            <p style={{ color: '#888', marginBottom: '20px', fontSize: '0.9rem' }}>Aapne abhi tak koi order place nahi kiya hai.</p>
+            <Link to="/shop" className="btn btn-primary" style={{ padding: '10px 24px' }}>
+              Explore Shop
+            </Link>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {orders.map((order, orderIdx) => {
+              const formattedId = formatOrderId(order.id, orderIdx);
+              const isDelivered = order.status === 'Delivered';
+              const statusColor = isDelivered ? '#2ea44f' : '#e2b963';
+              const orderTotal = order.totalAmount || order.total || 0;
+              const items = order.items || [];
+              const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Recently';
+
+              return (
+                <div key={order.id || orderIdx} style={{
+                  background: 'var(--bg-2, #181824)',
+                  borderRadius: '14px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)'
                 }}>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <span style={{ color: '#888' }}>Order</span>
-                    <strong style={{ color: '#fff' }}>#{formattedId}</strong>
-                  </div>
-                  <div style={{ color: '#888', fontSize: '0.8rem' }}>
-                    {order.createdAt ? new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'Recent'}
-                  </div>
-                </div>
-
-                {/* Products List */}
-                <div>
-                  {items.map((item, itemIdx) => (
-                    <div key={itemIdx} style={{
-                      padding: '16px 20px',
-                      display: 'flex',
-                      gap: '16px',
-                      alignItems: 'center',
-                      borderBottom: itemIdx === items.length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.04)'
-                    }}>
-                      <img 
-                        src={getImageUrl(item.image)} 
-                        alt={item.name}
-                        style={{
-                          width: '70px',
-                          height: '70px',
-                          objectFit: 'cover',
-                          borderRadius: '8px',
-                          background: '#111',
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                          flexShrink: 0
-                        }}
-                        onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }}
-                      />
-
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <h4 style={{
-                          margin: '0 0 6px',
-                          fontSize: '0.95rem',
-                          fontWeight: '500',
-                          color: '#fff',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}>
-                          {item.name || 'Product Item'}
-                        </h4>
-                        
-                        <div style={{ display: 'flex', gap: '12px', fontSize: '0.8rem', color: '#aaa' }}>
-                          {item.size && <span>Size: <strong style={{ color: '#ddd' }}>{item.size}</strong></span>}
-                          <span>Qty: <strong style={{ color: '#ddd' }}>{item.quantity || item.qty || 1}</strong></span>
-                        </div>
+                  {/* Card Header Strip */}
+                  <div style={{
+                    padding: '14px 20px',
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                    display: 'flex',
+                    justify: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '10px',
+                    fontSize: '0.88rem'
+                  }}>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                      <div>
+                        <span style={{ color: '#888', fontSize: '0.78rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>ORDER NO.</span>
+                        <strong style={{ color: '#fff', fontSize: '0.95rem' }}>#{formattedId}</strong>
                       </div>
-
-                      {/* Status Column */}
-                      <div style={{ textAlign: 'right', flexShrink: 0, paddingLeft: '12px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'flex-end', marginBottom: '4px' }}>
-                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: statusColor, display: 'inline-block' }}></span>
-                          <span style={{ fontSize: '0.85rem', fontWeight: '600', color: statusColor }}>
-                            {order.status || 'Processing'}
-                          </span>
-                        </div>
-                        <p style={{ margin: 0, fontSize: '0.78rem', color: '#888' }}>
-                          Expected by <strong style={{ color: '#ddd' }}>3-5 Days</strong>
-                        </p>
+                      <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.1)' }} />
+                      <div>
+                        <span style={{ color: '#888', fontSize: '0.78rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PLACED ON</span>
+                        <span style={{ color: '#ddd', fontSize: '0.88rem' }}>{orderDate}</span>
                       </div>
                     </div>
-                  ))}
-                </div>
 
-                {/* Footer Total */}
-                <div style={{
-                  padding: '12px 20px',
-                  background: 'rgba(0, 0, 0, 0.2)',
-                  borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-                  display: 'flex',
-                  justify: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '0.88rem'
-                }}>
-                  <span style={{ color: '#888', fontSize: '0.8rem' }}>
-                    Payment: <strong style={{ color: '#ddd', textTransform: 'uppercase' }}>{order.payment || 'Card'}</strong>
-                  </span>
-                  <div>
-                    <span style={{ color: '#aaa', fontSize: '0.85rem' }}>Total Paid: </span>
-                    <strong style={{ color: 'var(--gold, #e2b963)', fontSize: '1.05rem', marginLeft: '4px' }}>
-                      ₹{orderTotal.toLocaleString('en-IN')}
-                    </strong>
+                    <div style={{
+                      padding: '4px 12px',
+                      borderRadius: '20px',
+                      fontSize: '0.8rem',
+                      fontWeight: '600',
+                      background: isDelivered ? 'rgba(46, 164, 79, 0.15)' : 'rgba(226, 185, 99, 0.15)',
+                      color: statusColor,
+                      border: `1px solid ${isDelivered ? 'rgba(46, 164, 79, 0.3)' : 'rgba(226, 185, 99, 0.3)'}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: statusColor }}></span>
+                      {order.status || 'Processing'}
+                    </div>
                   </div>
-                </div>
 
-              </div>
-            );
-          })}
-        </div>
-      )}
+                  {/* Items List */}
+                  <div style={{ padding: '8px 20px' }}>
+                    {items.map((item, itemIdx) => (
+                      <div key={itemIdx} style={{
+                        padding: '16px 0',
+                        display: 'flex',
+                        gap: '16px',
+                        alignItems: 'center',
+                        borderBottom: itemIdx === items.length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.05)'
+                      }}>
+                        <img 
+                          src={getImageUrl(item.image)} 
+                          alt={item.name}
+                          style={{
+                            width: '75px',
+                            height: '75px',
+                            objectFit: 'cover',
+                            borderRadius: '10px',
+                            background: '#111',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            flexShrink: 0
+                          }}
+                          onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }}
+                        />
+
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <h4 style={{
+                            margin: '0 0 6px',
+                            fontSize: '0.98rem',
+                            fontWeight: '600',
+                            color: '#fff',
+                            lineHeight: '1.4'
+                          }}>
+                            {item.name || 'Product Item'}
+                          </h4>
+                          
+                          <div style={{ display: 'flex', gap: '16px', fontSize: '0.83rem', color: '#aaa', flexWrap: 'wrap' }}>
+                            {item.size && <span>Size: <strong style={{ color: '#fff' }}>{item.size}</strong></span>}
+                            <span>Qty: <strong style={{ color: '#fff' }}>{item.quantity || item.qty || 1}</strong></span>
+                            <span>Item Price: <strong style={{ color: '#fff' }}>₹{item.price}</strong></span>
+                          </div>
+                        </div>
+
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <span style={{ fontSize: '0.78rem', color: '#888', display: 'block', marginBottom: '2px' }}>Delivery Expectation</span>
+                          <span style={{ fontSize: '0.88rem', fontWeight: '600', color: 'var(--gold, #e2b963)' }}>3-5 Business Days</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Card Footer */}
+                  <div style={{
+                    padding: '14px 20px',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+                    display: 'flex',
+                    justify: 'space-between',
+                    alignItems: 'center',
+                    fontSize: '0.88rem'
+                  }}>
+                    <span style={{ color: '#888', fontSize: '0.83rem' }}>
+                      Payment: <strong style={{ color: '#ddd', textTransform: 'uppercase' }}>{order.payment || 'COD'}</strong>
+                    </span>
+                    <div>
+                      <span style={{ color: '#aaa', fontSize: '0.88rem' }}>Total Paid: </span>
+                      <strong style={{ color: 'var(--gold, #e2b963)', fontSize: '1.15rem', marginLeft: '6px' }}>
+                        ₹{orderTotal.toLocaleString('en-IN')}
+                      </strong>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
