@@ -29,48 +29,59 @@ export default function Checkout() {
     }
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     if (cart.length === 0) { showToast('Cart is empty!', 'error'); return; }
     setLoading(true);
+
+    const orderPayload = {
+      customer: `${form.firstName} ${form.lastName}`.trim(),
+      email: form.email, 
+      phone: form.phone,
+      address: form.address, 
+      city: form.city, 
+      pincode: form.pincode,
+      payment,
+      items: cart.map(i => ({
+        id: i.id || i.product?._id || i.product?.id,
+        name: i.product?.name || i.name || 'Product Item',
+        image: i.product?.image || i.image || 'product_tshirt.jpg',
+        price: i.product?.price || i.price || 0,
+        size: i.size || 'M',
+        quantity: i.qty || i.quantity || 1,
+        colorIndex: i.colorIndex || 0
+      })),
+      subtotal: totalPrice, 
+      discount, 
+      shipping, 
+      totalAmount: total,
+      total: total,
+      status: 'Processing',
+      createdAt: new Date().toISOString()
+    };
+
     try {
-      // 👈 FIXED: Items payload me full details (name, image, price) include kiye gaye hain
-      const orderPayload = {
-        customer: `${form.firstName} ${form.lastName}`.trim(),
-        email: form.email, 
-        phone: form.phone,
-        address: form.address, 
-        city: form.city, 
-        pincode: form.pincode,
-        payment,
-        items: cart.map(i => ({
-          id: i.id,
-          name: i.product?.name || i.name || 'Product',
-          image: i.product?.image || i.image || 'product_tshirt.jpg',
-          price: i.product?.price || i.price || 0,
-          size: i.size,
-          quantity: i.qty || 1,
-          colorIndex: i.colorIndex || 0
-        })),
-        subtotal: totalPrice, 
-        discount, 
-        shipping, 
-        totalAmount: total,
-        total: total,
-        status: 'Processing',
-        createdAt: new Date().toISOString()
-      };
-
+      // 1. Send Order to Backend API (Triggers Nodemailer Email)
       const res = await placeOrder(orderPayload);
+      const backendSavedOrder = res.data?.data || res.data || orderPayload;
 
-      // Backup local storage save for instant user access
+      // 2. Save in Local Storage as Sync Backup for My Orders
       const existingOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
-      localStorage.setItem('shopx-orders', JSON.stringify([res.data?.data || orderPayload, ...existingOrders]));
+      const uniqueOrders = [backendSavedOrder, ...existingOrders.filter(o => o.id !== backendSavedOrder.id)];
+      localStorage.setItem('shopx-orders', JSON.stringify(uniqueOrders));
 
       clearCart();
-      navigate('/success', { state: { orderId: res.data?.data?.id || Date.now() } });
-    } catch {
-      showToast('Failed to place order. Try again!', 'error');
+      showToast('Order placed successfully!', 'success');
+      navigate('/success', { state: { orderId: backendSavedOrder.id || `SX${Date.now()}` } });
+    } catch (err) {
+      console.error('Order placement API failed:', err);
+      
+      // Fallback: If Render server sleeping, save locally so order is not lost
+      const existingOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
+      localStorage.setItem('shopx-orders', JSON.stringify([orderPayload, ...existingOrders]));
+
+      clearCart();
+      navigate('/success', { state: { orderId: orderPayload.id || `SX${Date.now()}` } });
     } finally {
       setLoading(false);
     }

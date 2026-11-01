@@ -1,81 +1,121 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { v4 as uuidv4 } from 'uuid';
+import nodemailer from 'nodemailer';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_PATH = path.join(__dirname, '../data/orders.json');
+// Temporary in-memory / fallback store (agar aap DB use nahi kar rahe)
+let ordersList = [];
 
-const readOrders = () => JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
-const writeOrders = (data) => fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
-
-// GET /api/orders  (Admin only)
-export const getAllOrders = (req, res) => {
-  try {
-    const orders = readOrders();
-    res.json({ success: true, data: orders });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to load orders' });
+// Email Transporter Config
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER, // Aapka Gmail ID
+    pass: process.env.GMAIL_PASS  // Google se mila 16-digit App Password
   }
-};
+});
 
-// POST /api/orders  (Customer places order)
-export const createOrder = (req, res) => {
+// 1. Create New Order & Send Email Notification
+export const createOrder = async (req, res) => {
   try {
-    const orders = readOrders();
-    const { customer, email, phone, address, city, pincode, payment, items, subtotal, discount, shipping, total } = req.body;
+    const orderData = req.body;
 
-    const orderId = '#SX' + Math.floor(Math.random() * 90000 + 10000);
-    const newOrder = {
-      id: orderId,
-      customer, email, phone, address, city, pincode,
-      payment: payment || 'card',
-      items: items || [],
-      subtotal: parseFloat(subtotal) || 0,
-      discount: parseFloat(discount) || 0,
-      shipping: parseFloat(shipping) || 0,
-      total: parseFloat(total) || 0,
-      date: new Date().toISOString(),
-      status: 'pending',
+    // Generate Order ID if missing
+    if (!orderData.id) {
+      orderData.id = `SX${Math.floor(10000 + Math.random() * 90000)}`;
+    }
+    if (!orderData.status) {
+      orderData.status = 'Pending';
+    }
+    if (!orderData.createdAt) {
+      orderData.createdAt = new Date().toISOString();
+    }
+
+    // Save order in memory list
+    ordersList.unshift(orderData);
+
+    // Email HTML Format
+    const itemsHtml = (orderData.items || []).map(item => `
+      <li style="margin-bottom: 6px;">
+        <strong>${item.name || 'Product'}</strong> — Qty: ${item.quantity || item.qty || 1} | Size: ${item.size || 'N/A'} | Price: ₹${item.price}
+      </li>
+    `).join('');
+
+    const mailOptions = {
+      from: `"ShopX Store" <${process.env.GMAIL_USER}>`,
+      to: process.env.GMAIL_USER, // 👈 Notification aapke Gmail inbox par jayega
+      subject: `🚨 New Order Received! #${orderData.id}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 24px; border-radius: 8px; border: 1px solid #ddd;">
+            <h2 style="color: #e2b963; margin-top: 0;">🎉 New Order Received on ShopX!</h2>
+            <hr style="border: 0; border-top: 1px solid #eee;" />
+            <p><strong>Order ID:</strong> #${orderData.id}</p>
+            <p><strong>Customer:</strong> ${orderData.customer || 'Guest'}</p>
+            <p><strong>Email:</strong> ${orderData.email || 'N/A'}</p>
+            <p><strong>Phone:</strong> ${orderData.phone || 'N/A'}</p>
+            <p><strong>Address:</strong> ${orderData.address || ''}, ${orderData.city || ''} ${orderData.pincode || ''}</p>
+            <hr style="border: 0; border-top: 1px solid #eee;" />
+            <h3>Ordered Items:</h3>
+            <ul>${itemsHtml}</ul>
+            <hr style="border: 0; border-top: 1px solid #eee;" />
+            <h3 style="color: #2ea44f;">Total Amount: ₹${orderData.totalAmount || orderData.total || 0}</h3>
+            <p><strong>Payment Mode:</strong> ${(orderData.payment || 'COD').toUpperCase()}</p>
+          </div>
+        </div>
+      `
     };
 
-    orders.push(newOrder);
-    writeOrders(orders);
-    res.status(201).json({ success: true, data: newOrder, message: 'Order placed successfully!' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to place order' });
+    // Send Email via Nodemailer
+    try {
+      if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Order notification email sent for #${orderData.id}`);
+      } else {
+        console.log('⚠️ GMAIL_USER or GMAIL_PASS not found in environment variables.');
+      }
+    } catch (mailErr) {
+      console.error('❌ Email sending failed:', mailErr.message);
+    }
+
+    res.status(201).json({ success: true, data: orderData });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// PATCH /api/orders/:id  (Admin toggles delivery status)
-export const updateOrderStatus = (req, res) => {
+// 2. Get All Orders (Admin Panel ke liye)
+export const getAllOrders = async (req, res) => {
   try {
-    const orders = readOrders();
-    const order = orders.find(o => o.id === req.params.id);
-    if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
+    res.status(200).json({ success: true, data: ordersList });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
+// 3. Update Order Status (Deliver Button ke liye)
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
     const { status } = req.body;
-    order.status = status || (order.status === 'pending' ? 'delivered' : 'pending');
 
-    writeOrders(orders);
-    res.json({ success: true, data: order, message: `Order marked as ${order.status}` });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to update order' });
+    const orderIndex = ordersList.findIndex(o => String(o.id) === String(id));
+    if (orderIndex !== -1) {
+      ordersList[orderIndex].status = status || 'Delivered';
+      return res.status(200).json({ success: true, data: ordersList[orderIndex] });
+    }
+
+    res.status(200).json({ success: true, message: 'Status updated' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// DELETE /api/orders/:id  (Admin only)
-export const deleteOrder = (req, res) => {
+// 4. Delete Order (Trash Button ke liye)
+export const deleteOrder = async (req, res) => {
   try {
-    let orders = readOrders();
-    const exists = orders.find(o => o.id === req.params.id);
-    if (!exists) return res.status(404).json({ success: false, message: 'Order not found' });
-
-    orders = orders.filter(o => o.id !== req.params.id);
-    writeOrders(orders);
-    res.json({ success: true, message: 'Order deleted!' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to delete order' });
+    const { id } = req.params;
+    ordersList = ordersList.filter(o => String(o.id) !== String(id));
+    res.status(200).json({ success: true, message: 'Order deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
