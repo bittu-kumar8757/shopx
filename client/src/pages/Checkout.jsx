@@ -13,8 +13,11 @@ export default function Checkout() {
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponMsg, setCouponMsg] = useState('');
   const [payment, setPayment] = useState('cod');
-  
-  // Clean Address State (Without Address Type)
+
+  // Aapka Scanner Image & UPI ID Details
+  const upiId = 'bittukumar865758@okaxis'; // 👈 Aapka UPI ID yahan change kar sakte hain
+  const upiQrUrl = getImageUrl('qr_code.png'); // 👈 Public folder me scanner image link
+
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -41,6 +44,11 @@ export default function Checkout() {
       setCouponMsg('Invalid code. Try SHOPX20');
       setCouponApplied(false);
     }
+  };
+
+  const copyUpiId = () => {
+    navigator.clipboard.writeText(upiId);
+    showToast('UPI ID copied to clipboard!', 'success');
   };
 
   const handleSubmit = async (e) => {
@@ -167,20 +175,69 @@ export default function Checkout() {
 
               </div>
 
-              {/* Payment Section */}
+              {/* Payment Section (Without Card & With UPI Scanner Box) */}
               <div className="checkout-section" style={{ background: 'var(--bg-2, #181824)', padding: '24px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <h2 className="cs-title" style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 16px' }}>Payment Mode</h2>
                 <div className="payment-methods" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  {[['cod','💵 Cash on Delivery (COD)'],['upi','📱 UPI / PhonePe / GPay'],['card','💳 Credit / Debit Card']].map(([val, label]) => (
-                    <label key={val} style={{
-                      padding: '14px 16px', borderRadius: '10px', background: payment === val ? 'rgba(226, 185, 99, 0.12)' : '#111',
-                      border: `1px solid ${payment === val ? 'var(--gold, #e2b963)' : '#333'}`, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
-                    }}>
-                      <input type="radio" name="payment" value={val} checked={payment === val} onChange={() => setPayment(val)} />
-                      {label}
-                    </label>
-                  ))}
+                  
+                  {/* COD Option */}
+                  <label style={{
+                    padding: '14px 16px', borderRadius: '10px', background: payment === 'cod' ? 'rgba(226, 185, 99, 0.12)' : '#111',
+                    border: `1px solid ${payment === 'cod' ? 'var(--gold, #e2b963)' : '#333'}`, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
+                  }}>
+                    <input type="radio" name="payment" value="cod" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
+                    💵 Cash on Delivery (COD)
+                  </label>
+
+                  {/* UPI Option */}
+                  <label style={{
+                    padding: '14px 16px', borderRadius: '10px', background: payment === 'upi' ? 'rgba(226, 185, 99, 0.12)' : '#111',
+                    border: `1px solid ${payment === 'upi' ? 'var(--gold, #e2b963)' : '#333'}`, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px'
+                  }}>
+                    <input type="radio" name="payment" value="upi" checked={payment === 'upi'} onChange={() => setPayment('upi')} />
+                    📱 UPI / PhonePe / GPay / Paytm
+                  </label>
+
                 </div>
+
+                {/* 👈 Dynamic Scanner Box when UPI is selected */}
+                {payment === 'upi' && (
+                  <div style={{
+                    marginTop: '16px', padding: '20px', borderRadius: '12px', background: '#111',
+                    border: '1px dashed var(--gold, #e2b963)', textAlign: 'center', color: '#fff'
+                  }}>
+                    <h4 style={{ margin: '0 0 8px', color: 'var(--gold, #e2b963)' }}>Scan QR Code to Pay ₹{total.toLocaleString('en-IN')}</h4>
+                    <p style={{ margin: '0 0 16px', color: '#aaa', fontSize: '0.85rem' }}>Open PhonePe, Google Pay, or Paytm to scan and pay</p>
+                    
+                    {/* QR Image Box */}
+                    <div style={{ display: 'inline-block', padding: '12px', background: '#fff', borderRadius: '12px', marginBottom: '16px' }}>
+                      <img 
+                        src={upiQrUrl} 
+                        alt="UPI Scanner QR" 
+                        style={{ width: '180px', height: '180px', objectFit: 'contain', display: 'block' }}
+                        onError={(e) => {
+                          // Fallback QR generator if image missing
+                          e.target.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${upiId}&pn=ShopX%20Store&am=${total}`;
+                        }}
+                      />
+                    </div>
+
+                    {/* Copy UPI ID Bar */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', maxWidth: '320px', margin: '0 auto' }}>
+                      <span style={{ fontSize: '0.85rem', color: '#aaa', background: '#222', padding: '8px 12px', borderRadius: '6px', border: '1px solid #333', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {upiId}
+                      </span>
+                      <button 
+                        type="button" 
+                        onClick={copyUpiId}
+                        style={{ padding: '8px 14px', background: 'var(--gold, #e2b963)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem' }}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
 
