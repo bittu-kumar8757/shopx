@@ -11,16 +11,21 @@ export default function Orders() {
 
   const loadOrders = () => {
     setLoading(true);
+    // 1. Fetch local storage saved orders
+    const localSaved = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
+
     fetchOrders()
       .then(res => {
-        const data = res.data?.data || res.data || [];
-        setOrders(data);
+        const apiOrders = res.data?.data || res.data || [];
+        // Combine both sources to avoid empty state on server restart
+        const combined = [...apiOrders, ...localSaved];
+        const uniqueOrders = Array.from(new Map(combined.map(o => [o.id || o.createdAt, o])).values());
+        
+        setOrders(uniqueOrders.length > 0 ? uniqueOrders : localSaved);
         setLoading(false);
       })
       .catch(() => {
-        // Fallback to local storage if API call fails
-        const localOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
-        setOrders(localOrders);
+        setOrders(localSaved);
         setLoading(false);
       });
   };
@@ -29,18 +34,14 @@ export default function Orders() {
     loadOrders();
   }, []);
 
-  // 👈 FIX: Deliver Button Handler
   const handleDeliver = async (id) => {
     try {
-      // 1. Try Backend API update
       await updateOrderStatus(id, 'Delivered');
       showToast('Order marked as Delivered!');
-    } catch (err) {
-      // Fallback update
+    } catch {
       showToast('Status updated locally!', 'info');
     }
 
-    // 2. Immediate Local State Update
     setOrders(prevOrders => {
       const updated = prevOrders.map(o => o.id === id ? { ...o, status: 'Delivered' } : o);
       localStorage.setItem('shopx-orders', JSON.stringify(updated));
@@ -48,19 +49,16 @@ export default function Orders() {
     });
   };
 
-  // 👈 FIX: Delete Button Handler
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this order?')) return;
 
     try {
-      // 1. Try Backend API Delete
       await deleteOrder(id);
       showToast('Order deleted successfully!');
-    } catch (err) {
+    } catch {
       showToast('Order removed!', 'info');
     }
 
-    // 2. Immediate Local State Update
     setOrders(prevOrders => {
       const updated = prevOrders.filter(o => o.id !== id);
       localStorage.setItem('shopx-orders', JSON.stringify(updated));
@@ -68,16 +66,14 @@ export default function Orders() {
     });
   };
 
-  // Stats Calculations
   const totalCount = orders.length;
   const pendingCount = orders.filter(o => o.status !== 'Delivered').length;
   const deliveredCount = orders.filter(o => o.status === 'Delivered').length;
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || o.total || 0), 0);
+  const totalRevenue = orders.reduce((sum, o) => sum + Number(o.totalAmount || o.total || 0), 0);
 
-  // Filtered Orders
   const filteredOrders = orders.filter(o => {
-    const matchesSearch = (o.id || '').toLowerCase().includes(search.toLowerCase()) || 
-                          (o.customer || '').toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = String(o.id || '').toLowerCase().includes(search.toLowerCase()) || 
+                          String(o.customer || o.email || '').toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === 'all' || 
                           (statusFilter === 'pending' && o.status !== 'Delivered') || 
                           (statusFilter === 'delivered' && o.status === 'Delivered');
@@ -88,13 +84,11 @@ export default function Orders() {
 
   return (
     <div style={{ padding: '24px' }}>
-      {/* Header */}
       <div style={{ marginBottom: '24px' }}>
         <h1 style={{ fontSize: '1.8rem', margin: 0, color: '#fff' }}>Orders</h1>
         <p style={{ margin: '4px 0 0', color: '#888', fontSize: '0.9rem' }}>ShopX Control Panel</p>
       </div>
 
-      {/* Stats Bar */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
@@ -119,7 +113,6 @@ export default function Orders() {
         </div>
       </div>
 
-      {/* Filter & Search */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
         <input 
           placeholder="Search by order ID or customer..." 
@@ -138,7 +131,6 @@ export default function Orders() {
         </select>
       </div>
 
-      {/* Orders Table */}
       <div style={{ background: '#181824', borderRadius: '12px', border: '1px solid #333', overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
           <thead>
@@ -157,17 +149,18 @@ export default function Orders() {
                 <td colSpan="6" style={{ padding: '30px', textAlign: 'center', color: '#888' }}>No orders found.</td>
               </tr>
             ) : (
-              filteredOrders.map(o => {
+              filteredOrders.map((o, idx) => {
                 const isDelivered = o.status === 'Delivered';
+                const orderId = String(o.id || `SX${10000 + idx}`).replace(/#/g, '');
 
                 return (
-                  <tr key={o.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <tr key={o.id || idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <td style={{ padding: '16px', color: 'var(--gold, #e2b963)', fontWeight: '600' }}>
-                      #{String(o.id).replace(/#/g, '')}
+                      #{orderId}
                     </td>
                     <td style={{ padding: '16px', color: '#fff' }}>{o.customer || o.email || 'Guest'}</td>
                     <td style={{ padding: '16px', color: '#aaa' }}>{o.items?.length || 1} item(s)</td>
-                    <td style={{ padding: '16px', color: '#fff', fontWeight: '600' }}>₹{o.totalAmount || o.total}</td>
+                    <td style={{ padding: '16px', color: '#fff', fontWeight: '600' }}>₹{o.totalAmount || o.total || 0}</td>
                     <td style={{ padding: '16px' }}>
                       <span style={{ 
                         padding: '4px 10px', 
