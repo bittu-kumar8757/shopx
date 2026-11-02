@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../components/Toast';
 import { placeOrder, getImageUrl } from '../api';
@@ -8,13 +8,26 @@ export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 👈 Check if coming from "Buy Now" for a single product
+  const buyNowItem = location.state?.buyNowItem;
+
+  // Single item for Buy Now, otherwise full cart
+  const checkoutItems = buyNowItem ? [buyNowItem] : cart;
+
+  // Calculate dynamic subtotal
+  const calculatedSubtotal = buyNowItem
+    ? (buyNowItem.price * (buyNowItem.qty || buyNowItem.quantity || 1))
+    : totalPrice;
+
   const [loading, setLoading] = useState(false);
   const [coupon, setCoupon] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
   const [couponMsg, setCouponMsg] = useState('');
   const [payment, setPayment] = useState('cod');
 
-  // Aapka Scanned PhonePe QR Image & Exact UPI ID Details
+  // PhonePe QR & UPI ID Details
   const upiId = '8757109220-2@ybl'; 
   const upiQrUrl = getImageUrl('qr_code.jpeg'); 
 
@@ -32,9 +45,9 @@ export default function Checkout() {
     pincode: ''
   });
 
-  const discount = couponApplied ? Math.round(totalPrice * 0.2) : 0;
-  const shipping = totalPrice >= 999 ? 0 : 99;
-  const total = totalPrice - discount + shipping;
+  const discount = couponApplied ? Math.round(calculatedSubtotal * 0.2) : 0;
+  const shipping = calculatedSubtotal >= 999 ? 0 : 99;
+  const total = calculatedSubtotal - discount + shipping;
 
   const handleCoupon = () => {
     if (coupon.toUpperCase() === 'SHOPX20') {
@@ -53,7 +66,7 @@ export default function Checkout() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (cart.length === 0) { showToast('Cart is empty!', 'error'); return; }
+    if (checkoutItems.length === 0) { showToast('Cart is empty!', 'error'); return; }
     setLoading(true);
 
     const fullFormattedAddress = `${form.houseNo}, ${form.street}${form.landmark ? ', Near ' + form.landmark : ''}, ${form.city}, ${form.state} - ${form.pincode}`;
@@ -71,7 +84,7 @@ export default function Checkout() {
       state: form.state,
       pincode: form.pincode,
       payment,
-      items: cart.map(i => ({
+      items: checkoutItems.map(i => ({
         id: i.id || i.product?._id || i.product?.id,
         name: i.product?.name || i.name || 'Product Item',
         image: i.product?.image || i.image || 'product_tshirt.jpg',
@@ -80,7 +93,7 @@ export default function Checkout() {
         quantity: i.qty || i.quantity || 1,
         colorIndex: i.colorIndex || 0
       })),
-      subtotal: totalPrice,
+      subtotal: calculatedSubtotal,
       discount,
       shipping,
       totalAmount: total,
@@ -97,7 +110,7 @@ export default function Checkout() {
       const uniqueOrders = [backendSavedOrder, ...existingOrders.filter(o => o.id !== backendSavedOrder.id)];
       localStorage.setItem('shopx-orders', JSON.stringify(uniqueOrders));
 
-      clearCart();
+      if (!buyNowItem) clearCart();
       showToast('Order placed successfully!', 'success');
       navigate('/success', { state: { orderId: backendSavedOrder.id || `SX${Date.now()}` } });
     } catch (err) {
@@ -106,7 +119,7 @@ export default function Checkout() {
       const existingOrders = JSON.parse(localStorage.getItem('shopx-orders') || '[]');
       localStorage.setItem('shopx-orders', JSON.stringify([orderPayload, ...existingOrders]));
 
-      clearCart();
+      if (!buyNowItem) clearCart();
       navigate('/success', { state: { orderId: orderPayload.id || `SX${Date.now()}` } });
     } finally {
       setLoading(false);
@@ -250,9 +263,9 @@ export default function Checkout() {
               <h2 className="cs-title">Order Summary</h2>
               
               <div className="order-items-list">
-                {cart.map((item, i) => (
+                {checkoutItems.map((item, i) => (
                   <div key={i} className="summary-item">
-                    <img src={getImageUrl(item.product?.image || item.image)} alt={item.product?.name} onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} />
+                    <img src={getImageUrl(item.product?.image || item.image)} alt={item.product?.name || item.name} onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} />
                     <div className="item-details">
                       <p className="item-name">{item.product?.name || item.name}</p>
                       <p className="item-meta">Size: {item.size} · Qty: {item.qty || item.quantity || 1}</p>
@@ -269,7 +282,7 @@ export default function Checkout() {
               {couponMsg && <p className="coupon-msg" style={{ color: couponApplied ? '#2ea44f' : '#ff4d4d' }}>{couponMsg}</p>}
 
               <div className="totals-breakdown">
-                <div className="total-line"><span>Subtotal</span><span>₹{totalPrice.toLocaleString('en-IN')}</span></div>
+                <div className="total-line"><span>Subtotal</span><span>₹{calculatedSubtotal.toLocaleString('en-IN')}</span></div>
                 <div className="total-line"><span>Discount</span><span className="discount-val">-₹{discount.toLocaleString('en-IN')}</span></div>
                 <div className="total-line"><span>Shipping</span><span>{shipping === 0 ? 'Free' : '₹' + shipping}</span></div>
                 <div className="total-line grand-total"><span>Total</span><span>₹{total.toLocaleString('en-IN')}</span></div>
