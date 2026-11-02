@@ -1,18 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import Product from '../models/Product.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_PATH = path.join(__dirname, '../data/products.json');
-
-const readProducts = () => JSON.parse(fs.readFileSync(DATA_PATH, 'utf-8'));
-const writeProducts = (data) => fs.writeFileSync(DATA_PATH, JSON.stringify(data, null, 2));
+const catLabels = { men: "Men's Collection", women: "Women's Collection", unisex: 'Unisex' };
+const tagLabels = { new: 'New', hot: 'Hot', sale: 'Sale' };
 
 // GET /api/products
-export const getAllProducts = (req, res) => {
+export const getAllProducts = async (req, res) => {
   try {
-    const products = readProducts();
+    const products = await Product.find({}).sort({ createdAt: -1 });
     res.json({ success: true, data: products });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to load products' });
@@ -20,10 +14,14 @@ export const getAllProducts = (req, res) => {
 };
 
 // GET /api/products/:id
-export const getProductById = (req, res) => {
+export const getProductById = async (req, res) => {
   try {
-    const products = readProducts();
-    const product = products.find(p => p.id === parseInt(req.params.id));
+    const { id } = req.params;
+    const isMongoId = id.match(/^[0-9a-fA-F]{24}$/);
+    const product = isMongoId 
+      ? await Product.findById(id) 
+      : await Product.findOne({ id: parseInt(id) });
+
     if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
     res.json({ success: true, data: product });
   } catch (err) {
@@ -31,19 +29,14 @@ export const getProductById = (req, res) => {
   }
 };
 
-// POST /api/products  (Admin only)
-// POST /api/products  (Admin only)
-export const createProduct = (req, res) => {
+// POST /api/products (Admin only)
+export const createProduct = async (req, res) => {
   try {
-    const products = readProducts();
-    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-    const catLabels = { men: "Men's Collection", women: "Women's Collection", unisex: 'Unisex' };
-    const tagLabels = { new: 'New', hot: 'Hot', sale: 'Sale' };
     const { name, category, description, price, originalPrice, tag, rating, material, fit, care, sizes, outOfStock, image, featured } = req.body;
 
-    const newProduct = {
-      id: newId,
-      name, category,
+    const newProduct = new Product({
+      name,
+      category,
       categoryLabel: catLabels[category] || category,
       price: parseFloat(price),
       originalPrice: originalPrice ? parseFloat(originalPrice) : null,
@@ -56,58 +49,59 @@ export const createProduct = (req, res) => {
       sizes: sizes || ['S', 'M', 'L', 'XL'],
       outOfStock: outOfStock || [],
       colors: ['#f0f0e8', '#1a1a1a', '#2d4a3e', '#8b5e3c'],
-      description: description || '', // 👈 Description optional kar diya hai (empty string allowed)
+      description: description || '',
       material: material || '',
       fit: fit || '',
       care: care || 'Machine wash cold',
       featured: featured || false,
-    };
+    });
 
-    products.push(newProduct);
-    writeProducts(products);
-    res.status(201).json({ success: true, data: newProduct, message: 'Product added successfully!' });
+    const savedProduct = await newProduct.save();
+    res.status(201).json({ success: true, data: savedProduct, message: 'Product added successfully!' });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to create product' });
+    res.status(500).json({ success: false, message: err.message || 'Failed to create product' });
   }
 };
 
-// PUT /api/products/:id  (Admin only)
-export const updateProduct = (req, res) => {
+// PUT /api/products/:id (Admin only)
+export const updateProduct = async (req, res) => {
   try {
-    const products = readProducts();
-    const idx = products.findIndex(p => p.id === parseInt(req.params.id));
-    if (idx === -1) return res.status(404).json({ success: false, message: 'Product not found' });
-
-    const catLabels = { men: "Men's Collection", women: "Women's Collection", unisex: 'Unisex' };
-    const tagLabels = { new: 'New', hot: 'Hot', sale: 'Sale' };
+    const { id } = req.params;
     const updates = req.body;
 
-    products[idx] = {
-      ...products[idx],
-      ...updates,
-      categoryLabel: catLabels[updates.category] || products[idx].categoryLabel,
-      tagLabel: updates.tag ? tagLabels[updates.tag] : null,
-      price: parseFloat(updates.price || products[idx].price),
-      originalPrice: updates.originalPrice ? parseFloat(updates.originalPrice) : products[idx].originalPrice,
-    };
+    if (updates.category) {
+      updates.categoryLabel = catLabels[updates.category] || updates.category;
+    }
+    if (updates.tag !== undefined) {
+      updates.tagLabel = updates.tag ? tagLabels[updates.tag] : null;
+    }
 
-    writeProducts(products);
-    res.json({ success: true, data: products[idx], message: 'Product updated!' });
+    const isMongoId = id.match(/^[0-9a-fA-F]{24}$/);
+    const filter = isMongoId ? { _id: id } : { id: parseInt(id) };
+
+    const updatedProduct = await Product.findOneAndUpdate(filter, updates, { new: true });
+
+    if (!updatedProduct) return res.status(404).json({ success: false, message: 'Product not found' });
+    res.json({ success: true, data: updatedProduct, message: 'Product updated!' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to update product' });
   }
 };
 
-// DELETE /api/products/:id  (Admin only)
-export const deleteProduct = (req, res) => {
+// DELETE /api/products/:id (Admin only - PERMANENT DELETE)
+export const deleteProduct = async (req, res) => {
   try {
-    let products = readProducts();
-    const exists = products.find(p => p.id === parseInt(req.params.id));
-    if (!exists) return res.status(404).json({ success: false, message: 'Product not found' });
+    const { id } = req.params;
+    const isMongoId = id.match(/^[0-9a-fA-F]{24}$/);
+    const filter = isMongoId ? { _id: id } : { id: parseInt(id) };
 
-    products = products.filter(p => p.id !== parseInt(req.params.id));
-    writeProducts(products);
-    res.json({ success: true, message: 'Product deleted!' });
+    const deletedProduct = await Product.findOneAndDelete(filter);
+
+    if (!deletedProduct) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    res.json({ success: true, message: 'Product permanently deleted from database!' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to delete product' });
   }
