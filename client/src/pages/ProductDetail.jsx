@@ -40,9 +40,20 @@ export default function ProductDetail() {
     showToast('Added to Cart successfully!', 'success');
   };
 
+  // 👈 FIX: Cart me add kiye bina isolated single-item state pass kar rahe hain
   const handleBuyNow = () => {
-    addToCart(product, quantity, selectedSize, selectedColor);
-    navigate('/checkout');
+    const singleBuyNowItem = {
+      product,
+      id: product._id || product.id,
+      name: product.name,
+      image: product.image || images[0],
+      price: product.price,
+      size: selectedSize,
+      qty: quantity,
+      colorIndex: selectedColor
+    };
+
+    navigate('/checkout', { state: { buyNowItem: singleBuyNowItem } });
   };
 
   return (
