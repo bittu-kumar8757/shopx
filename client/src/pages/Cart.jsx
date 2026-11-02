@@ -6,7 +6,19 @@ export default function Cart() {
   const { cart, totalItems, totalPrice, removeFromCart, updateQty } = useCart();
   const navigate = useNavigate();
 
-  if (cart.length === 0) {
+  // Calculation Safety Fallbacks
+  const calculatedTotalItems = cart ? cart.reduce((acc, item) => acc + (item.qty || 1), 0) : 0;
+  
+  const calculatedTotalPrice = cart ? cart.reduce((acc, item) => {
+    const itemPrice = Number(item.product?.price || item.price || 0);
+    const itemQty = Number(item.qty || 1);
+    return acc + (itemPrice * itemQty);
+  }, 0) : 0;
+
+  const actualItemsCount = totalItems || calculatedTotalItems;
+  const actualTotalPrice = totalPrice || calculatedTotalPrice;
+
+  if (!cart || cart.length === 0) {
     return (
       <div className="cart-empty-view">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="cart-empty-icon">
@@ -21,58 +33,67 @@ export default function Cart() {
     );
   }
 
-  const shippingCharge = totalPrice >= 999 ? 0 : 99;
-  const grandTotal = totalPrice + shippingCharge;
+  const shippingCharge = actualTotalPrice >= 999 ? 0 : 99;
+  const grandTotal = actualTotalPrice + shippingCharge;
 
   return (
     <div className="mobile-cart-wrapper">
       
       <h1 className="cart-heading">
-        Your Cart <span>({totalItems} items)</span>
+        Your Cart <span>({actualItemsCount} items)</span>
       </h1>
 
       <div className="cart-content-layout">
         
         {/* Products List */}
         <div className="cart-products-list">
-          {cart.map((item, i) => (
-            <div key={i} className="cart-item-card">
-              <div className="cart-item-thumb">
-                <img 
-                  src={getImageUrl(item.product?.image)} 
-                  alt={item.product?.name} 
-                  onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} 
-                />
-              </div>
+          {cart.map((item, i) => {
+            const name = item.product?.name || item.name || 'Product';
+            const price = Number(item.product?.price || item.price || 0);
+            const image = item.product?.image || item.image || 'product_tshirt.jpg';
+            const size = typeof item.size === 'object' ? (item.size?.name || 'M') : (item.size || 'M');
+            const qty = item.qty || 1;
+            const itemId = item.product?._id || item.product?.id || item.id || item._id;
 
-              <div className="cart-item-details">
-                <div className="cart-item-top">
-                  <span className="cart-item-title">{item.product?.name || item.name}</span>
-                  <button 
-                    className="cart-delete-btn" 
-                    onClick={() => removeFromCart(item.id, item.size, item.colorIndex)}
-                  >
-                    🗑
-                  </button>
+            return (
+              <div key={i} className="cart-item-card">
+                <div className="cart-item-thumb">
+                  <img 
+                    src={getImageUrl(image)} 
+                    alt={name} 
+                    onError={e => { e.target.src = getImageUrl('product_tshirt.jpg'); }} 
+                  />
                 </div>
 
-                <span className="cart-item-size">Size: {item.size}</span>
-
-                <div className="cart-item-bottom">
-                  <span className="cart-item-price">
-                    ₹{((item.product?.price || item.price || 0) * item.qty).toLocaleString('en-IN')}
-                  </span>
-
-                  <div className="cart-qty-box">
-                    <button onClick={() => updateQty(item.id, item.size, item.colorIndex, -1)}>−</button>
-                    <span>{item.qty}</span>
-                    <button onClick={() => updateQty(item.id, item.size, item.colorIndex, 1)}>+</button>
+                <div className="cart-item-details">
+                  <div className="cart-item-top">
+                    <span className="cart-item-title">{name}</span>
+                    <button 
+                      className="cart-delete-btn" 
+                      onClick={() => removeFromCart(itemId, size, item.colorIndex)}
+                    >
+                      🗑
+                    </button>
                   </div>
-                </div>
 
+                  <span className="cart-item-size">Size: {size}</span>
+
+                  <div className="cart-item-bottom">
+                    <span className="cart-item-price">
+                      ₹{(price * qty).toLocaleString('en-IN')}
+                    </span>
+
+                    <div className="cart-qty-box">
+                      <button onClick={() => updateQty(itemId, size, item.colorIndex, -1)}>−</button>
+                      <span>{qty}</span>
+                      <button onClick={() => updateQty(itemId, size, item.colorIndex, 1)}>+</button>
+                    </div>
+                  </div>
+
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Order Summary */}
@@ -80,8 +101,8 @@ export default function Cart() {
           <h3>Order Summary</h3>
 
           <div className="summary-line">
-            <span>Subtotal ({totalItems} items)</span>
-            <span>₹{totalPrice.toLocaleString('en-IN')}</span>
+            <span>Subtotal ({actualItemsCount} items)</span>
+            <span>₹{actualTotalPrice.toLocaleString('en-IN')}</span>
           </div>
 
           <div className="summary-line">
@@ -149,7 +170,7 @@ export default function Cart() {
           display: flex;
           gap: 14px;
           background: #181824;
-          padding: 12px 14px;
+          padding: 14px;
           border-radius: 12px;
           border: 1px solid rgba(255, 255, 255, 0.08);
           align-items: center;
@@ -174,7 +195,7 @@ export default function Cart() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 6px;
           min-width: 0;
         }
 
@@ -211,7 +232,7 @@ export default function Cart() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-top: 6px;
+          margin-top: 4px;
         }
 
         .cart-item-price {
@@ -249,8 +270,6 @@ export default function Cart() {
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 12px;
           padding: 20px;
-          position: sticky;
-          top: 100px;
         }
 
         .cart-summary-box h3 {
@@ -327,7 +346,6 @@ export default function Cart() {
           text-decoration: none;
         }
 
-        /* 📱 RESPONSIVE MOBILE FIX (< 768px) */
         @media (max-width: 768px) {
           .mobile-cart-wrapper {
             padding-top: 80px;
@@ -342,7 +360,6 @@ export default function Cart() {
           }
 
           .cart-summary-box {
-            position: static !important;
             width: 100%;
             box-sizing: border-box;
           }
