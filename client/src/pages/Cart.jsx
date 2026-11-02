@@ -6,7 +6,7 @@ export default function Cart() {
   const { cart, totalItems, totalPrice, removeFromCart, updateQty } = useCart();
   const navigate = useNavigate();
 
-  // Calculation Safety Fallbacks
+  // Safety Fallback Calculations
   const calculatedTotalItems = cart ? cart.reduce((acc, item) => acc + (item.qty || 1), 0) : 0;
   
   const calculatedTotalPrice = cart ? cart.reduce((acc, item) => {
@@ -18,17 +18,52 @@ export default function Cart() {
   const actualItemsCount = totalItems || calculatedTotalItems;
   const actualTotalPrice = totalPrice || calculatedTotalPrice;
 
+  // Empty Cart Screen Fix (Strict SVG Size)
   if (!cart || cart.length === 0) {
     return (
-      <div className="cart-empty-view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="cart-empty-icon">
+      <div className="cart-empty-wrapper">
+        <svg 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          strokeWidth="1.5" 
+          width="70" 
+          height="70" 
+          style={{ width: '70px', height: '70px', maxWidth: '70px', minWidth: '70px', color: '#666' }}
+        >
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
           <line x1="3" y1="6" x2="21" y2="6"/>
           <path d="M16 10a4 4 0 0 1-8 0"/>
         </svg>
-        <h2>Your cart is empty</h2>
-        <p>Add some amazing clothes to get started!</p>
-        <Link to="/shop" className="btn-shop-now">Start Shopping</Link>
+        <h2 style={{ margin: '12px 0 4px', fontSize: '1.6rem', color: '#fff', fontWeight: 700 }}>Your cart is empty</h2>
+        <p style={{ margin: '0 0 16px', color: '#888', fontSize: '0.95rem' }}>Add some amazing clothes to get started!</p>
+        <Link 
+          to="/shop" 
+          style={{ 
+            padding: '12px 24px', 
+            background: '#e2b963', 
+            color: '#000', 
+            borderRadius: '8px', 
+            fontWeight: 700, 
+            textDecoration: 'none',
+            display: 'inline-block'
+          }}
+        >
+          Start Shopping
+        </Link>
+
+        <style>{`
+          .cart-empty-wrapper {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+            text-align: center;
+            box-sizing: border-box;
+          }
+        `}</style>
       </div>
     );
   }
@@ -37,27 +72,28 @@ export default function Cart() {
   const grandTotal = actualTotalPrice + shippingCharge;
 
   return (
-    <div className="mobile-cart-wrapper">
+    <div className="shopx-cart-page">
       
-      <h1 className="cart-heading">
+      <h1 className="shopx-cart-title">
         Your Cart <span>({actualItemsCount} items)</span>
       </h1>
 
-      <div className="cart-content-layout">
+      <div className="shopx-cart-grid">
         
-        {/* Products List */}
-        <div className="cart-products-list">
+        {/* Cart Products List */}
+        <div className="shopx-cart-items-container">
           {cart.map((item, i) => {
             const name = item.product?.name || item.name || 'Product';
             const price = Number(item.product?.price || item.price || 0);
-            const image = item.product?.image || item.image || 'product_tshirt.jpg';
+            const rawImage = item.product?.image || item.image;
+            const image = Array.isArray(rawImage) ? rawImage[0] : rawImage;
             const size = typeof item.size === 'object' ? (item.size?.name || 'M') : (item.size || 'M');
             const qty = item.qty || 1;
             const itemId = item.product?._id || item.product?.id || item.id || item._id;
 
             return (
-              <div key={i} className="cart-item-card">
-                <div className="cart-item-thumb">
+              <div key={i} className="shopx-cart-card">
+                <div className="shopx-cart-img-box">
                   <img 
                     src={getImageUrl(image)} 
                     alt={name} 
@@ -65,66 +101,68 @@ export default function Cart() {
                   />
                 </div>
 
-                <div className="cart-item-details">
-                  <div className="cart-item-top">
-                    <span className="cart-item-title">{name}</span>
+                <div className="shopx-cart-details">
+                  <div className="shopx-cart-card-top">
+                    <span className="shopx-cart-item-name">{name}</span>
                     <button 
-                      className="cart-delete-btn" 
+                      className="shopx-cart-delete-btn" 
                       onClick={() => removeFromCart(itemId, size, item.colorIndex)}
+                      title="Remove"
                     >
                       🗑
                     </button>
                   </div>
 
-                  <span className="cart-item-size">Size: {size}</span>
+                  <div className="shopx-cart-size">Size: {size}</div>
 
-                  <div className="cart-item-bottom">
-                    <span className="cart-item-price">
+                  <div className="shopx-cart-card-bottom">
+                    <span className="shopx-cart-item-price">
                       ₹{(price * qty).toLocaleString('en-IN')}
                     </span>
 
-                    <div className="cart-qty-box">
+                    <div className="shopx-qty-counter">
                       <button onClick={() => updateQty(itemId, size, item.colorIndex, -1)}>−</button>
                       <span>{qty}</span>
                       <button onClick={() => updateQty(itemId, size, item.colorIndex, 1)}>+</button>
                     </div>
                   </div>
-
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Order Summary */}
-        <div className="cart-summary-box">
-          <h3>Order Summary</h3>
+        {/* Order Summary Box */}
+        <div className="shopx-cart-summary">
+          <h2>Order Summary</h2>
 
-          <div className="summary-line">
+          <div className="shopx-summary-line">
             <span>Subtotal ({actualItemsCount} items)</span>
             <span>₹{actualTotalPrice.toLocaleString('en-IN')}</span>
           </div>
 
-          <div className="summary-line">
+          <div className="shopx-summary-line">
             <span>Shipping</span>
-            <span style={{ color: shippingCharge === 0 ? '#2ea44f' : '#fff' }}>
+            <span style={{ color: shippingCharge === 0 ? '#2ea44f' : '#fff', fontWeight: 600 }}>
               {shippingCharge === 0 ? 'Free' : `₹${shippingCharge}`}
             </span>
           </div>
 
-          <div className="summary-line total-line">
+          <div className="shopx-summary-divider"></div>
+
+          <div className="shopx-summary-line shopx-total-line">
             <span>Total</span>
-            <span className="total-price">₹{grandTotal.toLocaleString('en-IN')}</span>
+            <span className="shopx-gold-text">₹{grandTotal.toLocaleString('en-IN')}</span>
           </div>
 
           <button 
-            className="checkout-action-btn" 
+            className="shopx-btn-checkout" 
             onClick={() => navigate('/checkout')}
           >
             Proceed to Checkout →
           </button>
 
-          <Link to="/shop" className="continue-shop-link">
+          <Link to="/shop" className="shopx-btn-continue">
             Continue Shopping
           </Link>
         </div>
@@ -132,51 +170,54 @@ export default function Cart() {
       </div>
 
       <style>{`
-        .mobile-cart-wrapper {
+        .shopx-cart-page {
           width: 100%;
-          max-width: 1100px;
+          max-width: 1050px;
           margin: 0 auto;
-          padding: 100px 16px 120px;
+          padding: 100px 16px 100px;
           box-sizing: border-box;
           color: #fff;
         }
 
-        .cart-heading {
+        .shopx-cart-title {
           font-size: 1.8rem;
           font-weight: 800;
           margin-bottom: 24px;
         }
 
-        .cart-heading span {
+        .shopx-cart-title span {
           color: #888;
           font-size: 1.1rem;
           font-weight: 400;
         }
 
-        .cart-content-layout {
+        .shopx-cart-grid {
           display: grid;
-          grid-template-columns: 1fr 360px;
+          grid-template-columns: 1fr 340px;
           gap: 24px;
           align-items: start;
         }
 
-        .cart-products-list {
+        .shopx-cart-items-container {
           display: flex;
           flex-direction: column;
           gap: 14px;
+          width: 100%;
         }
 
-        .cart-item-card {
+        .shopx-cart-card {
           display: flex;
           gap: 14px;
           background: #181824;
-          padding: 14px;
+          padding: 12px;
           border-radius: 12px;
           border: 1px solid rgba(255, 255, 255, 0.08);
           align-items: center;
+          box-sizing: border-box;
+          width: 100%;
         }
 
-        .cart-item-thumb {
+        .shopx-cart-img-box {
           width: 80px;
           height: 90px;
           border-radius: 8px;
@@ -185,28 +226,28 @@ export default function Cart() {
           flex-shrink: 0;
         }
 
-        .cart-item-thumb img {
+        .shopx-cart-img-box img {
           width: 100%;
           height: 100%;
           object-fit: cover;
         }
 
-        .cart-item-details {
+        .shopx-cart-details {
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 4px;
           min-width: 0;
         }
 
-        .cart-item-top {
+        .shopx-cart-card-top {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
           gap: 8px;
         }
 
-        .cart-item-title {
+        .shopx-cart-item-name {
           font-size: 0.95rem;
           font-weight: 600;
           color: #fff;
@@ -215,41 +256,43 @@ export default function Cart() {
           text-overflow: ellipsis;
         }
 
-        .cart-delete-btn {
+        .shopx-cart-delete-btn {
           background: none;
           border: none;
           color: #ff4d4d;
           font-size: 1rem;
           cursor: pointer;
+          padding: 2px 4px;
         }
 
-        .cart-item-size {
+        .shopx-cart-size {
           font-size: 0.8rem;
           color: #aaa;
         }
 
-        .cart-item-bottom {
+        .shopx-cart-card-bottom {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-top: 4px;
+          margin-top: 6px;
         }
 
-        .cart-item-price {
+        .shopx-cart-item-price {
           font-weight: 700;
           color: #e2b963;
           font-size: 1.05rem;
         }
 
-        .cart-qty-box {
+        .shopx-qty-counter {
           display: flex;
           align-items: center;
           background: #111;
           border: 1px solid #333;
           border-radius: 6px;
+          overflow: hidden;
         }
 
-        .cart-qty-box button {
+        .shopx-qty-counter button {
           width: 28px;
           height: 28px;
           background: none;
@@ -259,25 +302,28 @@ export default function Cart() {
           font-size: 0.9rem;
         }
 
-        .cart-qty-box span {
+        .shopx-qty-counter span {
           padding: 0 8px;
           font-size: 0.85rem;
           font-weight: 600;
         }
 
-        .cart-summary-box {
+        .shopx-cart-summary {
           background: #181824;
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 12px;
           padding: 20px;
+          box-sizing: border-box;
+          width: 100%;
         }
 
-        .cart-summary-box h3 {
+        .shopx-cart-summary h2 {
           margin: 0 0 16px;
           font-size: 1.15rem;
+          font-weight: 700;
         }
 
-        .summary-line {
+        .shopx-summary-line {
           display: flex;
           justify-content: space-between;
           margin-bottom: 10px;
@@ -285,20 +331,23 @@ export default function Cart() {
           font-size: 0.9rem;
         }
 
-        .total-line {
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          padding-top: 12px;
-          margin-top: 12px;
+        .shopx-summary-divider {
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          margin: 12px 0;
+        }
+
+        .shopx-total-line {
           font-size: 1.15rem;
           font-weight: 800;
           color: #fff;
+          margin-bottom: 16px;
         }
 
-        .total-price {
+        .shopx-gold-text {
           color: #e2b963;
         }
 
-        .checkout-action-btn {
+        .shopx-btn-checkout {
           width: 100%;
           padding: 14px;
           background: #e2b963;
@@ -308,10 +357,9 @@ export default function Cart() {
           font-weight: 800;
           font-size: 1rem;
           cursor: pointer;
-          margin-top: 16px;
         }
 
-        .continue-shop-link {
+        .shopx-btn-continue {
           display: block;
           text-align: center;
           margin-top: 12px;
@@ -320,48 +368,27 @@ export default function Cart() {
           font-size: 0.85rem;
         }
 
-        .cart-empty-view {
-          min-height: 70vh;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding-top: 100px;
-          text-align: center;
-          gap: 12px;
-        }
-
-        .cart-empty-icon {
-          width: 60px;
-          height: 60px;
-          color: #666;
-        }
-
-        .btn-shop-now {
-          padding: 12px 24px;
-          background: #e2b963;
-          color: #000;
-          border-radius: 8px;
-          font-weight: 700;
-          text-decoration: none;
-        }
-
+        /* 📱 Mobile Responsive Rules (< 768px) */
         @media (max-width: 768px) {
-          .mobile-cart-wrapper {
-            padding-top: 80px;
-            padding-bottom: 140px;
+          .shopx-cart-page {
+            padding-top: 75px;
+            padding-bottom: 120px;
           }
 
-          .cart-content-layout {
+          .shopx-cart-grid {
             grid-template-columns: 1fr !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 20px;
+            gap: 18px;
           }
 
-          .cart-summary-box {
-            width: 100%;
-            box-sizing: border-box;
+          .shopx-cart-card {
+            padding: 10px;
+          }
+
+          .shopx-cart-img-box {
+            width: 70px;
+            height: 80px;
           }
         }
       `}</style>
